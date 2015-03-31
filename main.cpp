@@ -37,6 +37,7 @@ static void buildProjection(float *mat, float fov, float aspect, float znear, fl
     mat[15] = 0;
 }
 
+// copied from Quake
 float Q_rsqrt( float number )
 {
 	long i;
@@ -57,9 +58,9 @@ float Q_rsqrt( float number )
 // right-handed coordinate system
 // may not work
 static void buildView(float *mat,
-                      double eyeX, double eyeY, double eyeZ,
-                      double tarX, double tarY, double tarZ,
-                      double up_X, double up_Y, double up_Z) {
+                      float eyeX, float eyeY, float eyeZ,
+                      float tarX, float tarY, float tarZ,
+                      float up_X, float up_Y, float up_Z) {
     float zx = eyeX - tarX;
     float zy = eyeY - tarY;
     float zz = eyeZ - tarZ;

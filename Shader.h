@@ -72,7 +72,7 @@ protected:
             glGetShaderInfoLog(id, log_length, NULL, log);
             std::string str_log(log, log_length);
             delete[] log;
-            throw ShaderCompilationError(log);
+            throw ShaderCompilationError(str_log);
         }
     }
 };

@@ -37,24 +37,6 @@ static void buildProjection(float *mat, float fov, float aspect, float znear, fl
     mat[15] = 0;
 }
 
-// copied from Quake
-float Q_rsqrt( float number )
-{
-	long i;
-	float x2, y;
-	const float threehalfs = 1.5F;
- 
-	x2 = number * 0.5F;
-	y  = number;
-	i  = * ( long * ) &y;                       // evil floating point bit level hacking
-	i  = 0x5f3759df - ( i >> 1 );               // what the fuck?
-	y  = * ( float * ) &i;
-	y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
-//      y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
- 
-	return y;
-}
-
 // right-handed coordinate system
 // may not work
 static void buildView(float *mat,
@@ -64,14 +46,14 @@ static void buildView(float *mat,
     float zx = eyeX - tarX;
     float zy = eyeY - tarY;
     float zz = eyeZ - tarZ;
-    float zimag = Q_rsqrt(zx * zx + zy * zy + zz * zz);
+    float zimag = 1.0 / std::sqrt(zx * zx + zy * zy + zz * zz);
     zx *= zimag;
     zy *= zimag;
     zy *= zimag;
     float xx = up_Y*zz - up_Z*zy;
     float xy = up_Z*zx - up_X*zz;
     float xz = up_X*zy - up_Y*zx;
-    float ximag = Q_rsqrt(xx * xx + xy * xy + xz * xz);
+    float ximag = 1.0 / std::sqrt(xx * xx + xy * xy + xz * xz);
     xx *= ximag;
     xy *= ximag;
     xz *= ximag;

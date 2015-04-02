@@ -9,7 +9,7 @@ struct vector {
     inline vector(const double x, const double y) : x(x), y(y) {}
     inline vector(const vector &other): x(other.x), y(other.y) {}
 
-    inline const vector &operator=(const vector &other) {
+    inline vector &operator=(const vector &other) {
         x = other.x;
         y = other.y;
         return *this;

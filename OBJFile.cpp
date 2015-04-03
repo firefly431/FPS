@@ -1,6 +1,4 @@
 #include "OBJFile.h"
-#include <fstream>
-#include <iostream>
 
 static const std::streamsize cmax = std::numeric_limits<std::streamsize>::max();
 
@@ -39,6 +37,8 @@ GLuint OBJFile::read_vertex() {
     return ret;
 }
 
+// note that triangulation is super crappy and kind of works
+// for only simple files
 OBJFile::OBJFile(std::istream &in) : in(in) {
     // will modify in state
     in >> std::skipws;
@@ -78,29 +78,13 @@ OBJFile::OBJFile(std::istream &in) : in(in) {
     }
 }
 
-void OBJFile::write(std::ostream &out) {
-    // write back, simple operation
-    // write vertices
-    for (auto it = vertices.begin(); it != vertices.end(); it += 3)
-        out << "v " << *it << " " << *(it + 1) << " " << *(it + 2) << std::endl;
-    for (auto it = texcoords.begin(); it != texcoords.end(); it += 2)
-        out << "vt " << *it << " " << *(it + 1) << std::endl;
-    for (auto it = normals.begin(); it != normals.end(); it += 3)
-        out << "vn " << *it << " " << *(it + 1) << " " << *(it + 2) << std::endl;
-    for (auto it = faces.begin(); it != faces.end(); it += 3) {
-        auto a = *it, &b = *(it + 1), &c = *(it + 2);
-        ++a;++b;++c;
-        out << "f " << a << "/" << a << "/" << a << " " << b << "/" << b << "/" << b << " " << c << "/" << c << "/" << c << std::endl;
-    }
-}
-
-int main() {
-    std::ifstream in("test.obj");
-    std::ofstream out("out.obj");
-    try {
-        OBJFile file(in);
-        file.write(out);
-    } catch (const FileFormatException &ffe) {
-        std::cerr << "Error: " << ffe.what() << std::endl;
-    }
+VertexArray OBJFile::result() {
+    VertexArray ret(faces.size(), GL_TRIANGLES);
+    ret.activate();
+    ret.bindBuffer(VertexBuffer(sizeof(GLfloat) * vertices.size(), GL_STATIC_DRAW, 0, &vertices[0]), ATTRIBUTE_POSITION, 3, GL_FLOAT, 0);
+    ret.bindBuffer(VertexBuffer(sizeof(GLfloat) * texcoords.size(), GL_STATIC_DRAW, 0, &texcoords[0]), ATTRIBUTE_TEXCOORD, 2, GL_FLOAT, 0);
+    ret.bindBuffer(VertexBuffer(sizeof(GLfloat) * normals.size(), GL_STATIC_DRAW, 0, &normals[0]), ATTRIBUTE_NORMAL, 3, GL_FLOAT, 0);
+    ret.bindBuffer(IndexBuffer(sizeof(GLuint) * faces.size(), GL_STATIC_DRAW, 0, &faces[0]), GL_UNSIGNED_INT);
+    ret.deactivate();
+    return ret;
 }

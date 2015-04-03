@@ -28,6 +28,5 @@ class OBJFile {
 public:
     OBJFile(std::istream &in);
     VertexArray result();
-    void write(std::ostream &out);
 };
 

@@ -1,4 +1,6 @@
 #include "OBJFile.h"
+#include <fstream>
+#include <iostream>
 
 static const std::streamsize cmax = std::numeric_limits<std::streamsize>::max();
 
@@ -46,12 +48,17 @@ OBJFile::OBJFile(std::istream &in) : in(in) {
         in >> type;
         if (strcasecmp(type.c_str(), "f") == 0) {
             // face = triangle
-            faces.push_back(read_vertex());
-            faces.push_back(read_vertex());
-            faces.push_back(read_vertex());
+            GLuint a, b, c;
+            faces.push_back(a = read_vertex());
+            faces.push_back(b = read_vertex());
+            faces.push_back(c = read_vertex());
             in >> std::ws; // skip ws
             if (isdigit(in.peek())) {
-                throw FileFormatException("Quadrilateral");
+                GLuint d = read_vertex();
+                // triangulate
+                faces.push_back(c);
+                faces.push_back(d);
+                faces.push_back(a);
             }
         } else if (strcasecmp(type.c_str(), "v") == 0) {
             in >> f; filev.push_back(f);
@@ -68,6 +75,32 @@ OBJFile::OBJFile(std::istream &in) : in(in) {
         // if none, treat as comment
         // ignore rest of line
         in.ignore(cmax, '\n');
-        break;
+    }
+}
+
+void OBJFile::write(std::ostream &out) {
+    // write back, simple operation
+    // write vertices
+    for (auto it = vertices.begin(); it != vertices.end(); it += 3)
+        out << "v " << *it << " " << *(it + 1) << " " << *(it + 2) << std::endl;
+    for (auto it = texcoords.begin(); it != texcoords.end(); it += 2)
+        out << "vt " << *it << " " << *(it + 1) << std::endl;
+    for (auto it = normals.begin(); it != normals.end(); it += 3)
+        out << "vn " << *it << " " << *(it + 1) << " " << *(it + 2) << std::endl;
+    for (auto it = faces.begin(); it != faces.end(); it += 3) {
+        auto a = *it, &b = *(it + 1), &c = *(it + 2);
+        ++a;++b;++c;
+        out << "f " << a << "/" << a << "/" << a << " " << b << "/" << b << "/" << b << " " << c << "/" << c << "/" << c << std::endl;
+    }
+}
+
+int main() {
+    std::ifstream in("test.obj");
+    std::ofstream out("out.obj");
+    try {
+        OBJFile file(in);
+        file.write(out);
+    } catch (const FileFormatException &ffe) {
+        std::cerr << "Error: " << ffe.what() << std::endl;
     }
 }

@@ -1,8 +1,11 @@
 #include "OBJFile.h"
+#include <fstream>
+#include <iostream>
 
 static const std::streamsize cmax = std::numeric_limits<std::streamsize>::max();
 
 GLuint OBJFile::read_vertex() {
+    auto &in = *_in;
     GLuint a, b, c;
     char slash;
     in >> a >> std::ws >> slash;
@@ -39,7 +42,15 @@ GLuint OBJFile::read_vertex() {
 
 // note that triangulation is super crappy and kind of works
 // for only simple files
-OBJFile::OBJFile(std::istream &in) : in(in) {
+OBJFile::OBJFile(std::istream &in) : _in(&in) {load();}
+OBJFile::OBJFile(const char *fname) { // super hack
+    std::ifstream stream(fname);
+    _in = &stream;
+    load();
+    _in = nullptr;
+}
+void OBJFile::load() {
+    auto &in = *_in;
     // will modify in state
     in >> std::skipws;
     std::string type;

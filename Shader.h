@@ -6,6 +6,7 @@
 #include <string>
 #include <iterator>
 #include <stdexcept>
+#include <fstream>
 
 class ShaderError : public std::runtime_error {
 public:
@@ -55,6 +56,15 @@ public:
         load(text);
     }
     Shader(std::istream &stream) {
+        std::string text;
+        stream.seekg(0, std::ios::end);
+        text.resize(stream.tellg());
+        stream.seekg(0, std::ios::beg);
+        stream.read(&text[0], text.size());
+        load(text.c_str());
+    }
+    Shader(const char *fname, int) { // what can you do
+        std::ifstream stream(fname);
         std::string text;
         stream.seekg(0, std::ios::end);
         text.resize(stream.tellg());

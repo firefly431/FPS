@@ -22,11 +22,13 @@ class OBJFile {
     std::vector<GLfloat> filev, filet, filen;
     std::vector<GLuint> faces;
     std::map<uint3, GLuint> vtof;
-    std::istream &in;
+    std::istream *_in;
     unsigned int idx;
     GLuint read_vertex();
+    void load();
 public:
     OBJFile(std::istream &in);
+    OBJFile(const char *fname);
     VertexArray result();
 };
 

@@ -1,11 +1,13 @@
 #include "VertexArray.h"
 
-VertexArray::VertexArray() : id(0), buffers() {
+VertexArray::VertexArray(GLenum mode, GLsizei size) : id(0), buffers(), mode(mode), size(size) {
     glGenVertexArrays(1, &id);
 }
 
-VertexArray::VertexArray(VertexArray &&move) : id(move.id), buffers(std::move(move.buffers)) {
+VertexArray::VertexArray(VertexArray &&move) : id(move.id), buffers(std::move(move.buffers)), mode(move.mode), size(move.size) {
     move.id = 0;
+    move.mode = 0;
+    move.size = 0;
 }
 
 VertexArray::~VertexArray() {
@@ -36,4 +38,9 @@ void VertexArray::deactivate() {
 void VertexArray::bindBuffer(VertexBuffer &&buf, std::size_t i) {
     buffers[i] = std::unique_ptr<VertexBuffer>(&buf);
     glBindBuffer(GL_ARRAY_BUFFER, buf.id);
+    glEnableVertexAttribArray(i);
+}
+
+void VertexArray::draw() {
+    glDrawArrays(mode, 0, size);
 }

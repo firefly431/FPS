@@ -14,16 +14,18 @@ class VertexArray {
 protected:
     GLuint id;
     std::array<std::unique_ptr<VertexBuffer>, ATTRIBUTE_NUM> buffers;
-    GLenum mode;
+    std::unique_ptr<IndexBuffer> indices;
     GLsizei size;
+    GLenum mode, index_type;
 public:
-    VertexArray(GLenum mode, GLsizei size);
+    VertexArray(GLsizei size, GLenum mode = GL_TRIANGLES);
     VertexArray(VertexArray &&move);
     ~VertexArray();
     VertexArray &operator=(VertexArray &&move);
     void activate();
     static void deactivate();
-    void bindBuffer(VertexBuffer &&buf, std::size_t i, GLint size, GLenum type, GLsizei stride); // must be active
+    void bindBuffer(VertexBuffer &&buf, std::size_t i, GLint size = 3, GLenum type = GL_FLOAT, GLsizei stride = 0); // must be active
+    void bindBuffer(IndexBuffer &&buf, GLenum index_type = GL_UNSIGNED_INT);
     void draw();
 };
 

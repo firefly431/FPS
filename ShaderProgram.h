@@ -17,7 +17,9 @@ public:
     ShaderProgram &operator=(ShaderProgram &&move);
     void activate();
     static void deactivate();
+    // must be active
     void bindBuffer(const char *name, GLuint point);
+    // must be active
     void setSampler(const char *name, GLint idx);
 };
 

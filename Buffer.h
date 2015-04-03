@@ -64,7 +64,10 @@ public:
 
 extern template class Buffer<GL_UNIFORM_BUFFER>;
 extern template class Buffer<GL_ARRAY_BUFFER>;
+extern template class Buffer<GL_ELEMENT_ARRAY_BUFFER>;
 
 typedef Buffer<GL_UNIFORM_BUFFER> UniformBuffer;
 typedef Buffer<GL_ARRAY_BUFFER> ArrayBuffer;
 typedef ArrayBuffer VertexBuffer;
+typedef Buffer<GL_ELEMENT_ARRAY_BUFFER> ElementArrayBuffer;
+typedef ElementArrayBuffer IndexBuffer;

@@ -1,11 +1,19 @@
 #pragma once
 
+#include "ShaderProgram.h"
+#include "VertexArray.h"
+#include "Camera.h"
+
 class Mesh {
 public:
-    Mesh(ShaderProgram &&prog);
-    ~Mesh();
+    Mesh(ShaderProgram &&prog, VertexArray &&vao);
+    Mesh(Mesh &&move);
+    void activate();
+    static void deactivate();
+    void useCamera(const Camera &camera); // must be active
+    void draw();
 protected:
-    GLuint vbo, vao;
     ShaderProgram prog;
+    VertexArray vao;
 };
 

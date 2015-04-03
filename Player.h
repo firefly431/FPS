@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vector.h"
+#include "Camera.h"
 
 /*
  * Transformation matrix:
@@ -10,6 +11,8 @@
  *         0       0       0       1 ]
  */
 class Player {
+    friend class PlayerMesh;
+    friend void Camera::updateView(const Player &, float eyeZ);
 public:
     Player();
 

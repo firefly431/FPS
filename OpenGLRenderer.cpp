@@ -26,6 +26,8 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
             std::ifstream("player.v"),
             std::ifstream("basic.f")
         )) {
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_2D);
     window.setVerticalSyncEnabled(true);
     while (window.isOpen()) {
         sf::Event event;

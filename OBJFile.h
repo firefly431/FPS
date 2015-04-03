@@ -1,0 +1,32 @@
+#pragma once
+
+#include <tuple>
+#include <vector>
+#include <string>
+#include <map>
+#include <istream>
+#include <stdexcept>
+#include "OpenGL.h"
+
+#include "VertexArray.h"
+
+class FileFormatException : public std::runtime_error {
+public:
+    FileFormatException(const std::string &what) : runtime_error(what) {}
+};
+
+class OBJFile {
+    typedef std::tuple<GLuint, GLuint, GLuint> uint3;
+    std::vector<GLfloat> vertices, texcoords, normals;
+    // below are the things in the file
+    std::vector<GLfloat> filev, filet, filen;
+    std::vector<GLuint> faces;
+    std::map<uint3, GLuint> vtof;
+    std::istream &in;
+    unsigned int idx;
+    GLuint read_vertex();
+public:
+    OBJFile(std::istream &in);
+    VertexArray result();
+};
+

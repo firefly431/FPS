@@ -41,17 +41,14 @@ static void buildProjection(float *mat, float fov, float aspect, float znear, fl
 
 // right-handed coordinate system
 // may not work
+// dirX, dirY, dirZ normalized
 static void buildView(float *mat,
                       float eyeX, float eyeY, float eyeZ,
-                      float tarX, float tarY, float tarZ,
+                      float dirX, float dirY, float dirZ,
                       float up_X, float up_Y, float up_Z) {
-    float zx = eyeX - tarX;
-    float zy = eyeY - tarY;
-    float zz = eyeZ - tarZ;
-    float zimag = 1.0 / std::sqrt(zx * zx + zy * zy + zz * zz);
-    zx *= zimag;
-    zy *= zimag;
-    zy *= zimag;
+    float zx = -dirX;
+    float zy = -dirY;
+    float zz = -dirZ;
     float xx = up_Y*zz - up_Z*zy;
     float xy = up_Z*zx - up_X*zz;
     float xz = up_X*zy - up_Y*zx;

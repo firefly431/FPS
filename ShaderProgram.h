@@ -1,13 +1,7 @@
 #pragma once
 
 /*
- * attribute indices:
- * 0 - vertex coord
- *     (named position)
- * 1 - normal
- *     (named normal)
- * 2 - texcoord
- *     (named texcoord)
+ * attribute indices: see VertexAttribute.h
  */
 class ShaderProgram {
 protected:

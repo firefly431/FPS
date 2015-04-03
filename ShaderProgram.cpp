@@ -7,9 +7,9 @@ ShaderProgram::ShaderProgram(VertexShader &&v, FragmentShader &&f) {
     // attach and link
     glAttachShader(id, v.id);
     glAttachShader(id, f.id);
-    glBindAttribLocation(id, 0, "position");
-    glBindAttribLocation(id, 1, "normal");
-    glBindAttribLocation(id, 2, "texcoord");
+    glBindAttribLocation(id, ATTRIBUTE_POSITION, "position");
+    glBindAttribLocation(id, ATTRIBUTE_NORMAL, "normal");
+    glBindAttribLocation(id, ATTRIBUTE_TEXCOORD, "texcoord");
     glLinkProgram(id);
     // check
     GLint result = GL_FALSE, log_length;

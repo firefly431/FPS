@@ -38,7 +38,7 @@ ShaderProgram::~ShaderProgram() {
 
 ShaderProgram &operator=(ShaderProgram &&move) {
     if (this != &move) {
-        glDeleteProgram(id);
+        this->~ShaderProgram();
         id = move.id;
         move.id = 0;
     }

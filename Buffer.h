@@ -2,6 +2,7 @@
 
 template<GLenum BType>
 class Buffer {
+    friend class VertexArray;
 protected:
     GLsizeiptr size;
     GLuint id;
@@ -31,8 +32,7 @@ public:
     }
     TBuffer &operator=(TBuffer &&move) {
         if (this != &move) {
-            glDeleteBuffers(1, &id);
-            free(data);
+            this->~Buffer();
             id = move.id;
             move.id = 0;
             data = move.data;

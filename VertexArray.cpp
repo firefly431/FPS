@@ -35,10 +35,11 @@ void VertexArray::deactivate() {
 // assume already active
 // small performance gain when binding multiple buffers
 // most common use case
-void VertexArray::bindBuffer(VertexBuffer &&buf, std::size_t i) {
+void VertexArray::bindBuffer(VertexBuffer &&buf, std::size_t i, GLint size, GLenum type, GLsizei stride) {
     buffers[i] = std::unique_ptr<VertexBuffer>(&buf);
     glBindBuffer(GL_ARRAY_BUFFER, buf.id);
     glEnableVertexAttribArray(i);
+    glVertexAttribPointer(i, size, type, GL_FALSE, stride, 0);
 }
 
 void VertexArray::draw() {

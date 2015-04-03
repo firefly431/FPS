@@ -16,7 +16,7 @@ public:
     VertexArray &operator=(VertexArray &&move);
     void activate();
     static void deactivate();
-    void bindBuffer(VertexBuffer &&buf); // must be active
+    void bindBuffer(VertexBuffer &&buf, std::size_t i, GLint size, GLenum type, GLsizei stride); // must be active
     void draw();
 };
 

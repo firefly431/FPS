@@ -14,7 +14,5 @@ public:
 protected:
     sf::Window window;
 	std::vector<Player> players;
-	StaticMesh scene_mesh;
-	PlayerMesh player_mesh;
 };
 

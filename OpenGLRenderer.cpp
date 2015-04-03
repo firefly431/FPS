@@ -1,7 +1,10 @@
 #include "OpenGLRenderer.h"
+#include "OpenGL.h"
 
-#include <ifstream>
-#include <SFML/OpenGL.hpp>
+#include <fstream>
+#include <iostream>
+
+#include "ShaderProgram.h"
 
 // used in initializer list
 static sf::ContextSettings opengl_settings() {
@@ -9,23 +12,16 @@ static sf::ContextSettings opengl_settings() {
     settings.depthBits = 24;
     settings.stencilBits = 8;
     settings.antialiasingLevel = 0;
-    settings.majorVerson = 3;
+    settings.majorVersion = 3;
     settings.minorVersion = 2;
+    return settings;
 }
 
 OpenGLRenderer::OpenGLRenderer(int width, int height) :
         window(
             sf::VideoMode(width, height), "Spearthrowers",
             sf::Style::Default, opengl_settings()
-        ), players(),
-        scene_mesh(ShaderProgram(
-            std::ifstream("static.v"),
-            std::ifstream("basic.f")
-        )),
-        player_mesh(ShaderProgram(
-            std::ifstream("player.v"),
-            std::ifstream("basic.f")
-        )) {
+        ), players() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
     window.setVerticalSyncEnabled(true);
@@ -50,15 +46,6 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
 void OpenGLRenderer::draw() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// draw the meshes
-	scene_mesh.use();
-	scene_mesh.draw();
-	player_mesh.use();
-	auto it = players.cbegin(), end = players.cend();
-	for (; it != end; ++it) {
-		const Player &p = *it;
-		player_mesh.draw(p);
-	}
-	Mesh::unbind();
     window.display();
 }
 

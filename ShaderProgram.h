@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Shader.h"
+
 /*
  * attribute indices: see VertexAttribute.h
  */

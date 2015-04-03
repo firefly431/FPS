@@ -1,4 +1,7 @@
 #include "ShaderProgram.h"
+#include "VertexAttribute.h"
+
+#include "OpenGL.h"
 
 ShaderProgram::ShaderProgram(VertexShader &&v, FragmentShader &&f) {
     id = glCreateProgram();
@@ -14,7 +17,7 @@ ShaderProgram::ShaderProgram(VertexShader &&v, FragmentShader &&f) {
     // check
     GLint result = GL_FALSE, log_length;
     glGetProgramiv(id, GL_LINK_STATUS, &result);
-    glGetProgramiv(id, GL_INFO_LOG_LENGTH, &logLength);
+    glGetProgramiv(id, GL_INFO_LOG_LENGTH, &log_length);
     if (result == GL_FALSE) {
         if (log_length == 0)
             throw ShaderCompilationError("Unknown error");
@@ -36,7 +39,7 @@ ShaderProgram::~ShaderProgram() {
     glDeleteProgram(id);
 }
 
-ShaderProgram &operator=(ShaderProgram &&move) {
+ShaderProgram &ShaderProgram::operator=(ShaderProgram &&move) {
     if (this != &move) {
         this->~ShaderProgram();
         id = move.id;
@@ -54,7 +57,7 @@ void ShaderProgram::deactivate() {
 }
 
 void ShaderProgram::bindBuffer(const char *name, GLuint point) {
-    GLuint idx = glGetUniformBlockIndex(p, name);
+    GLuint idx = glGetUniformBlockIndex(id, name);
     glUniformBlockBinding(id, idx, point);
 }
 

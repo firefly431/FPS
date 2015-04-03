@@ -1,6 +1,8 @@
 // include everything
 #include <cmath>
 
+#include "OpenGLRenderer.h"
+
 #ifndef M_PI
 #define M_PI 3.14159265358979323846264338327950288419716939937
 #endif
@@ -69,7 +71,8 @@ static void buildView(float *mat,
     mat[15] = 1;
 }
 
-int main(int argc, char **argv) {
+int main() {
+    OpenGLRenderer renderer(640, 480);
     // initialize window and OpenGL
     // initialize meshes, textures, and shaders
     // build projection matrix

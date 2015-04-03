@@ -10,4 +10,4 @@ public:
 protected:
     vector position;
     double heading;
-}
+};

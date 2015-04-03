@@ -1,5 +1,12 @@
 #pragma once
 
+#include "OpenGL.h"
+
+#include <array>
+
+#include "VertexAttribute.h"
+#include "Buffer.h"
+
 /*
  * attribute indices: see VertexAttribute.h
  */

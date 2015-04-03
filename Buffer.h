@@ -1,5 +1,11 @@
 #pragma once
 
+#include "OpenGL.h"
+
+#include <cstddef>
+#include <cstdlib>
+#include <cstring>
+
 template<GLenum BType>
 class Buffer {
     friend class VertexArray;

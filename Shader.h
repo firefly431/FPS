@@ -1,56 +1,30 @@
 #pragma once
 
-#include <SFML/OpenGL.hpp>
+#include "OpenGL.h"
+
 #include <istream>
 #include <string>
 #include <iterator>
 #include <stdexcept>
 
-class ShaderError : public runtime_error {
+class ShaderError : public std::runtime_error {
 public:
-    inline explicit ShaderError(const string &what) : runtime_error(what);
-}
+    inline explicit ShaderError(const std::string &what) : runtime_error(what) {}
+};
 
 class ShaderCreationError : public ShaderError {
 public:
-    inline explicit ShaderCreationError() : ShaderError("Error creating shader.");
-}
+    inline explicit ShaderCreationError() : ShaderError("Error creating shader.") {}
+};
 
 class ShaderCompilationError : public ShaderError {
 public:
-    inline explicit ShaderCompilationError(const string &what) : ShaderError(what);
-}
+    inline explicit ShaderCompilationError(const std::string &what) : ShaderError(what) {}
+};
 
 template<GLenum SType>
 class Shader {
-protected:
-    void load(const char *text);
-public:
-    typedef Shader<SType> TShader;
-    friend class ShaderProgam;
-    Shader(const char *text) {
-        load(text);
-    }
-    Shader(std::istream &stream) {
-        std::string text(istream_iterator(stream), istream_iterator());
-        load(text->c_str());
-    }
-    Shader(TShader &&move) {
-        id = move.id;
-        move.id = 0;
-    }
-    ~Shader() {
-        // 0 is ignored
-        glDeleteShader(id);
-    }
-    Shader &operator=(TShader &&move) {
-        if (this != &other) {
-            glDeleteShader(id);
-            id = move.id;
-            move.id = 0;
-        }
-        return *this;
-    }
+    friend class ShaderProgram;
 protected:
     GLuint id;
 
@@ -75,10 +49,39 @@ protected:
             throw ShaderCompilationError(str_log);
         }
     }
+public:
+    typedef Shader<SType> TShader;
+    Shader(const char *text) {
+        load(text);
+    }
+    Shader(std::istream &stream) {
+        std::string text;
+        stream.seekg(0, std::ios::end);
+        text.resize(stream.tellg());
+        stream.seekg(0, std::ios::beg);
+        stream.read(&text[0], text.size());
+        load(text.c_str());
+    }
+    Shader(TShader &&move) {
+        id = move.id;
+        move.id = 0;
+    }
+    ~Shader() {
+        // 0 is ignored
+        glDeleteShader(id);
+    }
+    Shader &operator=(TShader &&move) {
+        if (this != &move) {
+            glDeleteShader(id);
+            id = move.id;
+            move.id = 0;
+        }
+        return *this;
+    }
 };
 
-extern template Shader<GL_VERTEX_SHADER>;
-extern template Shader<GL_FRAGMENT_SHADER>;
+extern template class Shader<GL_VERTEX_SHADER>;
+extern template class Shader<GL_FRAGMENT_SHADER>;
 
 typedef Shader<GL_VERTEX_SHADER> VertexShader;
 typedef Shader<GL_FRAGMENT_SHADER> FragmentShader;

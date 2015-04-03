@@ -4,6 +4,8 @@
 
 /*
  * attribute indices: see VertexAttribute.h
+ * must be named position, normal, texcoord
+ * color out is named color_out
  */
 class ShaderProgram {
 protected:

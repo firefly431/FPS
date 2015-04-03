@@ -13,6 +13,7 @@ ShaderProgram::ShaderProgram(VertexShader &&v, FragmentShader &&f) {
     glBindAttribLocation(id, ATTRIBUTE_POSITION, "position");
     glBindAttribLocation(id, ATTRIBUTE_NORMAL, "normal");
     glBindAttribLocation(id, ATTRIBUTE_TEXCOORD, "texcoord");
+    glBindFragDataLocation(id, 0, "color_out");
     glLinkProgram(id);
     // check
     GLint result = GL_FALSE, log_length;

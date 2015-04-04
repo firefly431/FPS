@@ -34,7 +34,7 @@ public:
     }
     ~Buffer() {
         glDeleteBuffers(1, &id);
-        free(data);
+        std::free(data);
     }
     TBuffer &operator=(TBuffer &&move) {
         if (this != &move) {

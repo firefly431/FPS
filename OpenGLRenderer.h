@@ -3,7 +3,8 @@
 #include <vector>
 #include <SFML/Window.hpp>
 
-#include "Player.h"
+#include "PlayerMesh.h"
+#include "Camera.h"
 
 class OpenGLRenderer {
 public:
@@ -13,6 +14,7 @@ public:
 	void draw();
 protected:
     sf::Window window;
-	std::vector<Player> players;
+    Camera camera;
+    PlayerMesh teapot;
 };
 

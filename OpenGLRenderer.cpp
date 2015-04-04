@@ -5,6 +5,8 @@
 #include <iostream>
 
 #include "ShaderProgram.h"
+#include "VertexArray.h"
+#include "OBJFile.h"
 
 // used in initializer list
 static sf::ContextSettings opengl_settings() {
@@ -21,10 +23,20 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
         window(
             sf::VideoMode(width, height), "Spearthrowers",
             sf::Style::Default, opengl_settings()
-        ), players() {
+        ), camera(),
+        teapot(
+            ShaderProgram(
+                VertexShader("player.vert", 0),
+                FragmentShader("basic.frag", 0)
+            ),
+            OBJFile("teapotNormal.obj").result()
+        ) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
     window.setVerticalSyncEnabled(true);
+    camera.updateView(0, -5, 0, 0, 1, 0, 0, 0, 1);
+    camera.updateProj(45, 640. / 480, 0.5, 100);
+    //teapot.useCamera(camera);
     // print settings
     sf::ContextSettings settings = window.getSettings();
     std::cout << "OpenGL version: ";
@@ -46,6 +58,9 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
 void OpenGLRenderer::draw() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// draw the meshes
+    teapot.activate();
+    teapot.draw();
+    Mesh::deactivate();
     window.display();
 }
 

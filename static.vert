@@ -17,5 +17,5 @@ out VertexData {
 void main() {
     vertex_out.texcoord = texcoord;
     vertex_out.normal = normalize(mat3(view) * normal);
-    gl_Position = projection * view * position;
+    gl_Position = projection * view * vec4(position, 1.0);
 }

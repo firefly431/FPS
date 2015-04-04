@@ -60,9 +60,8 @@ void ShaderProgram::deactivate() {
     glUseProgram(0);
 }
 
-void ShaderProgram::bindBuffer(const char *name, GLuint point) {
-    GLuint idx = glGetUniformBlockIndex(id, name);
-    glUniformBlockBinding(id, idx, point);
+GLint ShaderProgram::getUniformLocation(const char *name) {
+    return glGetUniformLocation(id, name);
 }
 
 void ShaderProgram::setSampler(const char *name, GLint idx) {

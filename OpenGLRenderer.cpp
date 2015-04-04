@@ -29,15 +29,16 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
                 VertexShader("player.vert", 0),
                 FragmentShader("basic.frag", 0)
             ),
-            OBJFile("teapotNormal.obj").result()
-        ) {
+            OBJFile("teapotTriangle.obj").result()
+        ), controller() {
     glEnable(GL_DEPTH_TEST);
     window.setVerticalSyncEnabled(true);
-    camera.updateView(0, 0, 0, 0, 0, 1, 0, 1, 0);
-    //camera.updateView(0, -5, 0, 0, 1, 0, 0, 0, 1);
+    //camera.updateView(0, 0, 0, 0, 0, 1, 0, 1, 0);
+    camera.updateView(0, -8, 0.8, 0, 1, 0, 0, 0, 1);
     camera.updateProj(45, 640. / 480, 0.5, 100);
-    UniformBuffer::deactivate();
-    teapot.useCamera(camera);
+    teapot.activate();
+    teapot.updateVP(camera);
+    Mesh::deactivate();
     // print settings
     sf::ContextSettings settings = window.getSettings();
     std::cout << "OpenGL version: ";
@@ -53,6 +54,7 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
             } // others such as keyboard input
         }
         draw();
+        controller.heading += 0.01;
     }
 }
 
@@ -60,6 +62,7 @@ void OpenGLRenderer::draw() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// draw the meshes
     teapot.activate();
+    teapot.update(controller);
     teapot.draw();
     Mesh::deactivate();
     window.display();

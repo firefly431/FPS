@@ -12,6 +12,7 @@
  */
 class Player {
     friend class PlayerMesh;
+    friend class OpenGLRenderer;
     friend void Camera::updateView(const Player &, float eyeZ);
 public:
     Player();

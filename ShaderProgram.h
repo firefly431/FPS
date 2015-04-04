@@ -19,7 +19,7 @@ public:
     void activate();
     static void deactivate();
     // must be active
-    void bindBuffer(const char *name, GLuint point);
+    GLint getUniformLocation(const char *name);
     // must be active
     void setSampler(const char *name, GLint idx);
 };

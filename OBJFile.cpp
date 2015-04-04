@@ -1,11 +1,11 @@
 #include "OBJFile.h"
 #include <fstream>
+#include <sstream>
 #include <iostream>
 
 static const std::streamsize cmax = std::numeric_limits<std::streamsize>::max();
 
-GLuint OBJFile::read_vertex() {
-    auto &in = *_in;
+GLuint OBJFile::read_vertex(std::istream &in) {
     GLuint a, b, c;
     char slash;
     in >> a >> std::ws >> slash;
@@ -40,32 +40,31 @@ GLuint OBJFile::read_vertex() {
     return ret;
 }
 
-// note that triangulation is super crappy and kind of works
-// for only simple files
-OBJFile::OBJFile(std::istream &in) : _in(&in) {load();}
+// figured out the problem with triangulation
+OBJFile::OBJFile(std::istream &in) {load(in);}
 OBJFile::OBJFile(const char *fname) { // super hack
     std::ifstream stream(fname);
-    _in = &stream;
-    load();
-    _in = nullptr;
+    load(stream);
 }
-void OBJFile::load() {
-    auto &in = *_in;
-    // will modify in state
-    in >> std::skipws;
+void OBJFile::load(std::istream &in1) {
+    // will modify in1 state
+    in1 >> std::skipws;
     std::string type;
+    std::string line;
     GLfloat f;
-    while (in.good()) {
+    while (in1.good()) {
+        std::getline(in1, line);
+        std::istringstream in(line);
         in >> type;
         if (strcasecmp(type.c_str(), "f") == 0) {
             // face = triangle
             GLuint a, b, c;
-            faces.push_back(a = read_vertex());
-            faces.push_back(b = read_vertex());
-            faces.push_back(c = read_vertex());
+            faces.push_back(a = read_vertex(in));
+            faces.push_back(b = read_vertex(in));
+            faces.push_back(c = read_vertex(in));
             in >> std::ws; // skip ws
             if (isdigit(in.peek())) {
-                GLuint d = read_vertex();
+                GLuint d = read_vertex(in);
                 // triangulate
                 faces.push_back(c);
                 faces.push_back(d);
@@ -83,9 +82,6 @@ void OBJFile::load() {
             in >> f; filen.push_back(f);
             in >> f; filen.push_back(f);
         }
-        // if none, treat as comment
-        // ignore rest of line
-        in.ignore(cmax, '\n');
     }
 }
 

@@ -5,12 +5,11 @@
 
 class PlayerMesh : public Mesh {
 public:
-    static const GLfloat MATRIX_IDENTITY[];
     PlayerMesh(ShaderProgram &&prog, VertexArray &&vao);
     PlayerMesh(PlayerMesh &&move);
-    void update(const Player &player); // update ubo
+    void update(const Player &player); // update model
 protected:
-    GLint binding_point;
-    UniformBuffer ubo;
+    GLfloat model[16];
+    GLint model_loc;
 };
 

@@ -4,33 +4,24 @@
 
 #include "BindingPoint.h"
 
-const GLfloat PlayerMesh::MATRIX_IDENTITY[] = {
-    1.0f, 0.0f, 0.0f, 0.0f,
-    0.0f, 1.0f, 0.0f, 0.0f,
-    0.0f, 0.0f, 1.0f, 0.0f,
-    0.0f, 0.0f, 0.0f, 1.0f,
-};
-
 PlayerMesh::PlayerMesh(ShaderProgram &&prog, VertexArray &&vao)
-: Mesh(std::move(prog), std::move(vao)), binding_point(BindingPoint::next()),
-  ubo(sizeof(GLfloat) * 16, GL_DYNAMIC_DRAW, binding_point, (void *)MATRIX_IDENTITY) {
-    this->prog.bindBuffer("transform", binding_point);
+: Mesh(std::move(prog), std::move(vao)), model() {
+    model[0] = model[5] = model[10] = model[15] = 1;
 }
 
-PlayerMesh::PlayerMesh(PlayerMesh &&move) : Mesh(std::move(move)), binding_point(move.binding_point), ubo(std::move(move.ubo)) {
-    move.binding_point = 0;
+PlayerMesh::PlayerMesh(PlayerMesh &&move) : Mesh(std::move(move)), model_loc(move.model_loc) {
+    memcpy(model, move.model, sizeof(GLfloat) * 16);
+    move.model_loc = 0;
 }
 
 void PlayerMesh::update(const Player &player) {
     // recalculate matrix
-    GLfloat *data = (GLfloat *)ubo.data;
     GLfloat cos = std::cos(player.heading), sin = std::sin(player.heading);
-    data[0]  =  cos;
-    data[1]  =  sin;
-    data[4]  = -sin;
-    data[5]  =  cos;
-    data[12] =  player.position.x;
-    data[13] =  player.position.y;
-    ubo.activate();
-    ubo.update();
+    model[0]  =  cos;
+    model[1]  =  sin;
+    model[4]  = -sin;
+    model[5]  =  cos;
+    model[12] =  player.position.x;
+    model[13] =  player.position.y;
+    glUniformMatrix4fv(model_loc, 1, GL_FALSE, model);
 }

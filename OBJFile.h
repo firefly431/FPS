@@ -22,10 +22,9 @@ class OBJFile {
     std::vector<GLfloat> filev, filet, filen;
     std::vector<GLuint> faces;
     std::map<uint3, GLuint> vtof;
-    std::istream *_in;
     unsigned int idx;
-    GLuint read_vertex();
-    void load();
+    GLuint read_vertex(std::istream &in);
+    void load(std::istream &in);
 public:
     OBJFile(std::istream &in);
     OBJFile(const char *fname);

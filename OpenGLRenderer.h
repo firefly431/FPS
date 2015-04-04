@@ -16,5 +16,6 @@ protected:
     sf::Window window;
     Camera camera;
     PlayerMesh teapot;
+    Player controller;
 };
 

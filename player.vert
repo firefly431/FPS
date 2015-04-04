@@ -7,7 +7,7 @@ layout (std140) uniform view_projection {
 
 layout (std140) uniform transform {
     mat4 model; // must be orthogonal
-}
+};
 
 in vec3 position;
 in vec3 normal;

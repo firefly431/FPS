@@ -10,3 +10,6 @@
 #elif defined(SFML_SYSTEM_MACOS)
 #include <OpenGL/gl3.h>
 #endif
+
+#include <iostream>
+

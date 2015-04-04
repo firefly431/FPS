@@ -32,13 +32,14 @@ void Camera::updateView(float eyeX, float eyeY, float eyeZ,
     float yx = zy*xz - zz*xy;
     float yy = zz*xx - zx*xz;
     float yz = zx*yy - zy*xx;
-    mat[0] = xx; mat[4] = yx; mat[8] = zx; mat[12] = 0;
-    mat[1] = xy; mat[5] = yy; mat[9] = zy; mat[13] = 0;
-    mat[2] = xz; mat[6] = yz; mat[10] = zz; mat[14] = 0;
-    mat[3] = -(xx*eyeX + xy*eyeY + xz*eyeZ);
-    mat[7] = -(yx*eyeX + yy*eyeY + yz*eyeZ);
-    mat[11] = -(zx*eyeX + zy*eyeZ + zz*eyeZ);
+    mat[0] = xx; mat[1] = yx; mat[2] = zx; mat[3] = 0;
+    mat[4] = xy; mat[5] = yy; mat[6] = zy; mat[7] = 0;
+    mat[8] = xz; mat[9] = yz; mat[10] = zz; mat[11] = 0;
+    mat[12] = -(xx*eyeX + xy*eyeY + xz*eyeZ);
+    mat[13] = -(yx*eyeX + yy*eyeY + yz*eyeZ);
+    mat[14] = -(zx*eyeX + zy*eyeY + zz*eyeZ);
     mat[15] = 1;
+    ubo.activate();
     ubo.update(0, sizeof(GLfloat) * 16);
 }
 
@@ -78,6 +79,7 @@ void Camera::updateProj(float fov, float aspect, float znear, float zfar) {
     mat[13] = 0;
     mat[14] = qn;
     mat[15] = 0;
+    ubo.activate();
     ubo.update(sizeof(GLfloat) * 16, sizeof(GLfloat) * 16);
 }
 

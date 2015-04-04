@@ -3,6 +3,9 @@
 
 #include "OpenGL.h"
 
+#include <vector>
+#include <string>
+
 ShaderProgram::ShaderProgram(VertexShader &&v, FragmentShader &&f) {
     id = glCreateProgram();
     if (!id)

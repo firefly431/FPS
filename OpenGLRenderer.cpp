@@ -32,11 +32,12 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
             OBJFile("teapotNormal.obj").result()
         ) {
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_TEXTURE_2D);
     window.setVerticalSyncEnabled(true);
-    camera.updateView(0, -5, 0, 0, 1, 0, 0, 0, 1);
+    camera.updateView(0, 0, 0, 0, 0, 1, 0, 1, 0);
+    //camera.updateView(0, -5, 0, 0, 1, 0, 0, 0, 1);
     camera.updateProj(45, 640. / 480, 0.5, 100);
-    //teapot.useCamera(camera);
+    UniformBuffer::deactivate();
+    teapot.useCamera(camera);
     // print settings
     sf::ContextSettings settings = window.getSettings();
     std::cout << "OpenGL version: ";

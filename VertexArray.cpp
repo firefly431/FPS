@@ -45,14 +45,14 @@ void VertexArray::deactivate() {
 // most common use case
 void VertexArray::bindBuffer(VertexBuffer &&buf, std::size_t i, GLint size, GLenum type, GLsizei stride) {
     buffers[i] = std::unique_ptr<VertexBuffer>(new VertexBuffer(std::move(buf)));
-    buf.activate();
+    buffers[i]->activate();
     glEnableVertexAttribArray(i);
     glVertexAttribPointer(i, size, type, GL_FALSE, stride, 0);
 }
 
 void VertexArray::bindBuffer(IndexBuffer &&buf, GLenum index_type) {
     indices = std::unique_ptr<IndexBuffer>(new IndexBuffer(std::move(buf)));
-    buf.activate();
+    indices->activate();
     this->index_type = index_type;
 }
 

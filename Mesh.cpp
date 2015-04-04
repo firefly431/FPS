@@ -14,6 +14,7 @@ void Mesh::deactivate() {
 }
 
 void Mesh::useCamera(const Camera &camera) {
+    prog.activate();
     prog.bindBuffer("view_projection", camera.getBindingPoint());
 }
 

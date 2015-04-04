@@ -8,6 +8,7 @@
  * color out is named color_out
  */
 class ShaderProgram {
+    friend class Mesh; // TEMP
 protected:
     GLuint id;
 public:

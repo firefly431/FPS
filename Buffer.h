@@ -21,8 +21,9 @@ public:
         if (copy != NULL)
             std::memcpy(data, copy, size);
         glBufferData(BType, size, data, usage);
-        if (BType == GL_UNIFORM_BUFFER)
+        if (BType == GL_UNIFORM_BUFFER) {
             glBindBufferBase(BType, binding_point, id);
+        }
     }
     Buffer(TBuffer &&move) {
         id = move.id;
@@ -55,7 +56,7 @@ public:
         glBindBuffer(BType, 0);
     }
     void update(GLintptr offset, GLsizeiptr size) {
-        glBufferSubData(BType, offset, size, data);
+        glBufferSubData(BType, offset, size, (char *)data + offset);
     }
     void update() {
         glBufferSubData(BType, 0, size, data);

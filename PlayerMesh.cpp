@@ -14,7 +14,7 @@ const GLfloat PlayerMesh::MATRIX_IDENTITY[] = {
 PlayerMesh::PlayerMesh(ShaderProgram &&prog, VertexArray &&vao)
 : Mesh(std::move(prog), std::move(vao)), binding_point(BindingPoint::next()),
   ubo(sizeof(GLfloat) * 16, GL_DYNAMIC_DRAW, binding_point, (void *)MATRIX_IDENTITY) {
-    prog.bindBuffer("model", binding_point);
+    this->prog.bindBuffer("transform", binding_point);
 }
 
 PlayerMesh::PlayerMesh(PlayerMesh &&move) : Mesh(std::move(move)), binding_point(move.binding_point), ubo(std::move(move.ubo)) {
@@ -31,5 +31,6 @@ void PlayerMesh::update(const Player &player) {
     data[5]  =  cos;
     data[12] =  player.position.x;
     data[13] =  player.position.y;
+    ubo.activate();
     ubo.update();
 }

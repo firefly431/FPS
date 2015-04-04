@@ -92,10 +92,10 @@ void OBJFile::load() {
 VertexArray OBJFile::result() {
     VertexArray ret(faces.size(), GL_TRIANGLES);
     ret.activate();
-    ret.bindBuffer(VertexBuffer(sizeof(GLfloat) * vertices.size(), GL_STATIC_DRAW, 0, &vertices[0]), ATTRIBUTE_POSITION, 3, GL_FLOAT, 0);
-    ret.bindBuffer(VertexBuffer(sizeof(GLfloat) * texcoords.size(), GL_STATIC_DRAW, 0, &texcoords[0]), ATTRIBUTE_TEXCOORD, 2, GL_FLOAT, 0);
-    ret.bindBuffer(VertexBuffer(sizeof(GLfloat) * normals.size(), GL_STATIC_DRAW, 0, &normals[0]), ATTRIBUTE_NORMAL, 3, GL_FLOAT, 0);
-    ret.bindBuffer(IndexBuffer(sizeof(GLuint) * faces.size(), GL_STATIC_DRAW, 0, &faces[0]), GL_UNSIGNED_INT);
+    ret.bindBuffer(VertexBuffer(sizeof(GLfloat) * vertices.size(), GL_STATIC_DRAW, &vertices[0]), ATTRIBUTE_POSITION, 3, GL_FLOAT, 0);
+    ret.bindBuffer(VertexBuffer(sizeof(GLfloat) * texcoords.size(), GL_STATIC_DRAW, &texcoords[0]), ATTRIBUTE_TEXCOORD, 2, GL_FLOAT, 0);
+    ret.bindBuffer(VertexBuffer(sizeof(GLfloat) * normals.size(), GL_STATIC_DRAW, &normals[0]), ATTRIBUTE_NORMAL, 3, GL_FLOAT, 0);
+    ret.bindBuffer(IndexBuffer(sizeof(GLuint) * faces.size(), GL_STATIC_DRAW, &faces[0]), GL_UNSIGNED_INT);
     ret.deactivate();
     return ret;
 }

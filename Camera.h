@@ -15,8 +15,8 @@ public:
                     float up_X, float up_Y, float up_Z);
     void updateView(const Player &player, float eyeZ);
     void updateProj(float fov, float aspect, float znear, float zfar);
-    GLint getBindingPoint() const;
+    void setViewUniform(GLint loc) const;
+    void setProjUniform(GLint loc) const;
 protected:
-    GLint binding_point;
-    UniformBuffer ubo;
+    GLfloat view[16], proj[16];
 };

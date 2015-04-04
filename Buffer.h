@@ -15,15 +15,12 @@ protected:
 public:
     typedef Buffer<BType> TBuffer;
     void *data;
-    Buffer(GLsizeiptr size, GLenum usage, GLuint binding_point = 0, void *copy=NULL) : size(size), id(0), data(std::malloc(size)) {
+    Buffer(GLsizeiptr size, GLenum usage, void *copy=NULL) : size(size), id(0), data(std::malloc(size)) {
         glGenBuffers(1, &id);
         glBindBuffer(BType, id);
         if (copy != NULL)
             std::memcpy(data, copy, size);
         glBufferData(BType, size, data, usage);
-        if (BType == GL_UNIFORM_BUFFER) {
-            glBindBufferBase(BType, binding_point, id);
-        }
     }
     Buffer(TBuffer &&move) {
         id = move.id;
@@ -63,11 +60,9 @@ public:
     }
 };
 
-extern template class Buffer<GL_UNIFORM_BUFFER>;
 extern template class Buffer<GL_ARRAY_BUFFER>;
 extern template class Buffer<GL_ELEMENT_ARRAY_BUFFER>;
 
-typedef Buffer<GL_UNIFORM_BUFFER> UniformBuffer;
 typedef Buffer<GL_ARRAY_BUFFER> ArrayBuffer;
 typedef ArrayBuffer VertexBuffer;
 typedef Buffer<GL_ELEMENT_ARRAY_BUFFER> ElementArrayBuffer;

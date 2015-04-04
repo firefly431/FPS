@@ -9,16 +9,18 @@
 #define M_PI 3.14159265358979323846264338327950288419716939937
 #endif
 
-Camera::Camera() : binding_point(BindingPoint::next()),
-    ubo(sizeof(GLfloat) * 32, GL_DYNAMIC_DRAW, BindingPoint::next()) {}
-Camera::Camera(Camera &&move) : binding_point(move.binding_point), ubo(std::move(move.ubo)) {
-    move.binding_point = 0;
+#include <cstdlib>
+
+Camera::Camera() : view(), proj() {}
+
+Camera::Camera(Camera &&move) {
+    std::memcpy(view, move.view, sizeof(GLfloat) * 16);
+    std::memcpy(proj, move.proj, sizeof(GLfloat) * 16);
 }
 
 void Camera::updateView(float eyeX, float eyeY, float eyeZ,
                         float dirX, float dirY, float dirZ,
                         float up_X, float up_Y, float up_Z) {
-    GLfloat *mat = (GLfloat *)ubo.data;
     float zx = -dirX;
     float zy = -dirY;
     float zz = -dirZ;
@@ -31,16 +33,14 @@ void Camera::updateView(float eyeX, float eyeY, float eyeZ,
     xz *= ximag;
     float yx = zy*xz - zz*xy;
     float yy = zz*xx - zx*xz;
-    float yz = zx*yy - zy*xx;
-    mat[0] = xx; mat[1] = yx; mat[2] = zx; mat[3] = 0;
-    mat[4] = xy; mat[5] = yy; mat[6] = zy; mat[7] = 0;
-    mat[8] = xz; mat[9] = yz; mat[10] = zz; mat[11] = 0;
-    mat[12] = -(xx*eyeX + xy*eyeY + xz*eyeZ);
-    mat[13] = -(yx*eyeX + yy*eyeY + yz*eyeZ);
-    mat[14] = -(zx*eyeX + zy*eyeY + zz*eyeZ);
-    mat[15] = 1;
-    ubo.activate();
-    ubo.update(0, sizeof(GLfloat) * 16);
+    float yz = zx*xy - zy*xx;
+    view[0] = xx; view[1] = yx; view[2] = zx; view[3] = 0;
+    view[4] = xy; view[5] = yy; view[6] = zy; view[7] = 0;
+    view[8] = xz; view[9] = yz; view[10] = zz; view[11] = 0;
+    view[12] = -(xx*eyeX + xy*eyeY + xz*eyeZ);
+    view[13] = -(yx*eyeX + yy*eyeY + yz*eyeZ);
+    view[14] = -(zx*eyeX + zy*eyeY + zz*eyeZ);
+    view[15] = 1;
 }
 
 void Camera::updateView(const Player &player, float eyeZ) {
@@ -50,7 +50,6 @@ void Camera::updateView(const Player &player, float eyeZ) {
 }
 
 void Camera::updateProj(float fov, float aspect, float znear, float zfar) {
-    GLfloat *mat = ((GLfloat *)ubo.data) + 16;
     static const double PI_OVER_360 = M_PI / 360.;
     float xymax = znear * std::tan(fov * PI_OVER_360);
     float ymin = -xymax;
@@ -63,26 +62,28 @@ void Camera::updateProj(float fov, float aspect, float znear, float zfar) {
     float w = 2 * znear / width;
     w = w / aspect;
     float h = 2 * znear / height;
-    mat[0]  = w;
-    mat[1]  = 0;
-    mat[2]  = 0;
-    mat[3]  = 0;
-    mat[4]  = 0;
-    mat[5]  = h;
-    mat[6]  = 0;
-    mat[7]  = 0;
-    mat[8]  = 0;
-    mat[9]  = 0;
-    mat[10] = q;
-    mat[11] = -1;
-    mat[12] = 0;
-    mat[13] = 0;
-    mat[14] = qn;
-    mat[15] = 0;
-    ubo.activate();
-    ubo.update(sizeof(GLfloat) * 16, sizeof(GLfloat) * 16);
+    proj[0]  = w;
+    proj[1]  = 0;
+    proj[2]  = 0;
+    proj[3]  = 0;
+    proj[4]  = 0;
+    proj[5]  = h;
+    proj[6]  = 0;
+    proj[7]  = 0;
+    proj[8]  = 0;
+    proj[9]  = 0;
+    proj[10] = q;
+    proj[11] = -1;
+    proj[12] = 0;
+    proj[13] = 0;
+    proj[14] = qn;
+    proj[15] = 0;
 }
 
-GLint Camera::getBindingPoint() const {
-    return binding_point;
+void Camera::setViewUniform(GLint loc) const {
+    glUniformMatrix4fv(loc, 1, GL_FALSE, view);
+}
+
+void Camera::setProjUniform(GLint loc) const {
+    glUniformMatrix4fv(loc, 1, GL_FALSE, proj);
 }

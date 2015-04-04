@@ -10,10 +10,11 @@ public:
     Mesh(Mesh &&move);
     void activate();
     static void deactivate();
-    void useCamera(const Camera &camera); // must be active
+    void updateVP(const Camera &camera); // must be active
     void draw();
 protected:
     ShaderProgram prog;
     VertexArray vao;
+    GLint view_loc, proj_loc;
 };
 

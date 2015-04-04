@@ -29,12 +29,12 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
                 VertexShader("player.vert", 0),
                 FragmentShader("basic.frag", 0)
             ),
-            OBJFile("teapotTriangle.obj").result()
+            OBJFile("teapotSmooth.obj").result()
         ), controller() {
     glEnable(GL_DEPTH_TEST);
     window.setVerticalSyncEnabled(true);
     //camera.updateView(0, 0, 0, 0, 0, 1, 0, 1, 0);
-    camera.updateView(0, -8, 0.8, 0, 1, 0, 0, 0, 1);
+    camera.updateView(0, -8, 1, 0, 1, 0, 0, 0, 1);
     camera.updateProj(45, 640. / 480, 0.5, 100);
     teapot.activate();
     teapot.updateVP(camera);

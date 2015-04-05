@@ -34,26 +34,24 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
         ), controller() {
     glEnable(GL_DEPTH_TEST);
     window.setVerticalSyncEnabled(true);
-    //camera.updateView(0, 0, 0, 0, 0, 1, 0, 1, 0);
     camera.updateView(0, -8, 1, 0, 1, 0, 0, 0, 1);
-    camera.updateProj(45, 640. / 480, 0.5, 100);
-    teapot.activate();
-    teapot.updateVP(camera);
-    Mesh::deactivate();
+    camera.updateProj(45, (double)width / height, 0.5, 100);
     // print settings
     sf::ContextSettings settings = window.getSettings();
     std::cout << "OpenGL version: ";
     std::cout << settings.majorVersion << "." << settings.minorVersion;
     std::cout << std::endl;
-    while (window.isOpen()) {
+    while (true) {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
+                break;
             } else if (event.type == sf::Event::Resized) {
                 resize(event.size.width, event.size.height);
             } // others such as keyboard input
         }
+        if (!window.isOpen()) break;
         draw();
         controller.heading += 0.01;
     }
@@ -64,12 +62,13 @@ void OpenGLRenderer::draw() {
 	// draw the meshes
     teapot.activate();
     teapot.update(controller);
+    teapot.updateVP(camera);
     teapot.draw();
     Mesh::deactivate();
     window.display();
 }
 
 void OpenGLRenderer::resize(unsigned int width, unsigned int height) {
-    // adjust the view uniforms
+    camera.updateProj(45, (double)width / height, 0.5, 100);
     glViewport(0, 0, width, height);
 }

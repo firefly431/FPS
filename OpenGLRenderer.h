@@ -10,6 +10,8 @@ class OpenGLRenderer {
 public:
 	OpenGLRenderer(int width, int height);
 
+    void mainloop();
+
 	void resize(unsigned int width, unsigned int height);
 	void draw();
 protected:

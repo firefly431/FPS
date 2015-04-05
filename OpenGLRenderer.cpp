@@ -41,6 +41,9 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
     std::cout << "OpenGL version: ";
     std::cout << settings.majorVersion << "." << settings.minorVersion;
     std::cout << std::endl;
+}
+
+void OpenGLRenderer::mainloop() {
     while (true) {
         sf::Event event;
         while (window.pollEvent(event)) {

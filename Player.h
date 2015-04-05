@@ -12,13 +12,19 @@
  */
 class Player {
     friend class PlayerMesh;
-    friend class OpenGLRenderer;
     friend void Camera::updateView(const Player &, float eyeZ);
 public:
     Player();
-
-    // game logic stuff; will be implemented after graphics
+    Player(const vector pos, const double h);
+    void rotate(double amount);
+    void moveForward();
+    void moveLeft();
+    void moveRight();
+    void moveBack();
+    static double MOVEMENT_SPEED, SIDE_SPEED, BACK_SPEED;
+    static double ZERO_ANGLE;
 protected:
     vector position;
     double heading;
+    double getRotation() const;
 };

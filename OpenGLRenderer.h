@@ -17,7 +17,8 @@ public:
 protected:
     sf::Window window;
     Camera camera;
-    PlayerMesh teapot;
-    Player controller;
+    PlayerMesh p_mesh;
+    std::vector<Player> players;
+    int current_player;
 };
 

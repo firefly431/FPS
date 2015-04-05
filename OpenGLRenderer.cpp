@@ -29,7 +29,8 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
                 VertexShader("player.vert", 0),
                 FragmentShader("basic.frag", 0)
             ),
-            OBJFile("teapotSmooth.obj").result()
+            OBJFile("teapotSmooth.obj").result(),
+            Texture("default.png")
         ), controller() {
     glEnable(GL_DEPTH_TEST);
     window.setVerticalSyncEnabled(true);

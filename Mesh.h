@@ -3,10 +3,11 @@
 #include "ShaderProgram.h"
 #include "VertexArray.h"
 #include "Camera.h"
+#include "Texture.h"
 
 class Mesh {
 public:
-    Mesh(ShaderProgram &&prog, VertexArray &&vao);
+    Mesh(ShaderProgram &&prog, VertexArray &&vao, Texture &&tex);
     Mesh(Mesh &&move);
     void activate();
     static void deactivate();
@@ -15,6 +16,7 @@ public:
 protected:
     ShaderProgram prog;
     VertexArray vao;
+    Texture tex;
     GLint view_loc, proj_loc;
 };
 

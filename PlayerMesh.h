@@ -5,7 +5,7 @@
 
 class PlayerMesh : public Mesh {
 public:
-    PlayerMesh(ShaderProgram &&prog, VertexArray &&vao);
+    PlayerMesh(ShaderProgram &&prog, VertexArray &&vao, Texture &&tex);
     PlayerMesh(PlayerMesh &&move);
     void update(const Player &player); // update model
 protected:

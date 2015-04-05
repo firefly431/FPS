@@ -4,8 +4,8 @@
 
 #include "BindingPoint.h"
 
-PlayerMesh::PlayerMesh(ShaderProgram &&prog, VertexArray &&vao)
-: Mesh(std::move(prog), std::move(vao)), model() {
+PlayerMesh::PlayerMesh(ShaderProgram &&prog, VertexArray &&vao, Texture &&tex)
+: Mesh(std::move(prog), std::move(vao), std::move(tex)), model() {
     model[0] = model[5] = model[10] = model[15] = 1;
 }
 

@@ -2,7 +2,6 @@
 
 #include <cmath>
 
-#include "BindingPoint.h"
 #include "Player.h"
 
 #ifndef M_PI

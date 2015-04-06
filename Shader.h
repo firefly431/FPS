@@ -90,8 +90,10 @@ public:
     }
 };
 
+#ifndef _MSC_VER
 extern template class Shader<GL_VERTEX_SHADER>;
 extern template class Shader<GL_FRAGMENT_SHADER>;
+#endif
 
 typedef Shader<GL_VERTEX_SHADER> VertexShader;
 typedef Shader<GL_FRAGMENT_SHADER> FragmentShader;

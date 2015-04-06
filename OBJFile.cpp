@@ -1,6 +1,9 @@
 #include "OBJFile.h"
 #include <fstream>
 #include <sstream>
+#ifdef _MSC_VER
+#define strcasecmp _stricmp
+#endif
 #include <iostream>
 
 static const std::streamsize cmax = std::numeric_limits<std::streamsize>::max();

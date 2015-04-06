@@ -4,11 +4,13 @@ VertexArray::VertexArray(GLsizei size, GLenum mode) : id(0), buffers(), indices(
     glGenVertexArrays(1, &id);
 }
 
-VertexArray::VertexArray(VertexArray &&move) : id(move.id), buffers(std::move(move.buffers)), indices(std::move(move.indices)), size(move.size), mode(move.mode), index_type(move.index_type) {
+VertexArray::VertexArray(VertexArray &&move) : id(move.id), indices(std::move(move.indices)), size(move.size), mode(move.mode), index_type(move.index_type) {
     move.id = 0;
     move.size = 0;
     move.mode = 0;
     move.index_type = 0;
+	for (int i = 0; i < ATTRIBUTE_NUM; i++)
+		buffers[i] = std::move(move.buffers[i]);
 }
 
 VertexArray::~VertexArray() {
@@ -20,7 +22,8 @@ VertexArray &VertexArray::operator=(VertexArray &&move) {
         this->~VertexArray();
         id = move.id;
         move.id = 0;
-        buffers = std::move(move.buffers);
+        for (int i = 0; i < ATTRIBUTE_NUM; i++)
+			buffers[i] = std::move(move.buffers[i]);
         indices = std::move(move.indices);
         size = move.size;
         move.size = 0;

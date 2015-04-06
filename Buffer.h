@@ -60,8 +60,10 @@ public:
     }
 };
 
+#ifndef _MSC_VER
 extern template class Buffer<GL_ARRAY_BUFFER>;
 extern template class Buffer<GL_ELEMENT_ARRAY_BUFFER>;
+#endif
 
 typedef Buffer<GL_ARRAY_BUFFER> ArrayBuffer;
 typedef ArrayBuffer VertexBuffer;

@@ -13,7 +13,7 @@
 class VertexArray {
 protected:
     GLuint id;
-    std::array<std::unique_ptr<VertexBuffer>, ATTRIBUTE_NUM> buffers;
+	std::unique_ptr<VertexBuffer> buffers[ATTRIBUTE_NUM];
     std::unique_ptr<IndexBuffer> indices;
     GLsizei size;
     GLenum mode, index_type;

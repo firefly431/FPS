@@ -55,22 +55,19 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
 void OpenGLRenderer::mainloop() {
     while (true) {
         sf::Event event;
-        double prot = 0;
-        auto ws = window.getSize();
-        int hw = ws.x / 2, hh = ws.y / 2;
-        sf::Vector2i h(hw, hh);
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
                 break;
             } else if (event.type == sf::Event::Resized) {
                 resize(event.size.width, event.size.height);
-            } else if (event.type == sf::Event::MouseMoved) {
-                // for some reason this is kind of buggy
-                prot = (event.mouseMove.x - hw) * RADS_PER_PX;
             }
         }
         if (!window.isOpen()) break;
+        auto ws = window.getSize();
+        int hw = ws.x / 2;
+        sf::Vector2i h(hw, ws.y / 2);
+        double prot = (sf::Mouse::getPosition(window).x - hw) * RADS_PER_PX;
         sf::Mouse::setPosition(h, window);
         auto &player = players[current_player];
         player.rotate(prot);

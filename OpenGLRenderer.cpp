@@ -35,6 +35,9 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
             OBJFile("teapotSmooth.obj").result(),
             Texture("default.png")
         ), players(), current_player(0) {
+    glewExperimental = GL_TRUE;
+    // lol
+    sf::priv::ensureExtensionsInit();
     glEnable(GL_DEPTH_TEST);
     window.setVerticalSyncEnabled(true);
     camera.updateView(0, 0, 1, 1, 0, 0, 0, 0, 1);

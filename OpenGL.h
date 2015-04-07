@@ -6,8 +6,9 @@
 #ifdef _MSC_VER
 #include <windows.h>
 #endif
-#include <glew.h>
+#include "glew.h"
 #include "glcorearb.h"
+#define USE_GLEW
 #elif defined(SFML_SYSTEM_LINUX) || defined(SFML_SYSTEM_FREEBSD)
 #include <GL/gl3.h>
 #elif defined(SFML_SYSTEM_MACOS)

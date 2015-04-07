@@ -8,6 +8,25 @@
 #include "VertexArray.h"
 #include "OBJFile.h"
 
+#if defined(SFML_SYSTEM_WINDOWS)
+#include "wglext.h"
+
+void *loadGLFunc(const char *name)
+{
+  void *p = (void *)wglGetProcAddress(name);
+  if(p == 0 ||
+    (p == (void*)0x1) || (p == (void*)0x2) || (p == (void*)0x3) ||
+    (p == (void*)-1) )
+  {
+    HMODULE module = LoadLibraryA("opengl32.dll");
+    p = (void *)GetProcAddress(module, name);
+  }
+ 
+  return p;
+}
+
+#endif
+
 // negative because right = clockwise
 static const double RADS_PER_PX = -0.01;
 
@@ -26,7 +45,7 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
         window(
             sf::VideoMode(width, height), "Spearthrowers",
             sf::Style::Default, opengl_settings()
-        ), camera(),
+        ), functions(), camera(),
         p_mesh(
             ShaderProgram(
                 VertexShader("player.vert", 0),
@@ -35,9 +54,6 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
             OBJFile("teapotSmooth.obj").result(),
             Texture("default.png")
         ), players(), current_player(0) {
-    glewExperimental = GL_TRUE;
-    // lol
-    sf::priv::ensureExtensionsInit();
     glEnable(GL_DEPTH_TEST);
     window.setVerticalSyncEnabled(true);
     camera.updateView(0, 0, 1, 1, 0, 0, 0, 0, 1);

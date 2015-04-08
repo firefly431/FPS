@@ -1,3 +1,4 @@
+#ifdef SFML_SYSTEM_WINDOWS
 #include "glcorearb.h"
 
 PFNGLACTIVETEXTUREPROC glActiveTexture;
@@ -43,3 +44,4 @@ PFNGLCREATESHADERPROC glCreateShader;
 PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog;
 PFNGLGETSHADERIVPROC glGetShaderiv;
 PFNGLSHADERSOURCEPROC glShaderSource;
+#endif

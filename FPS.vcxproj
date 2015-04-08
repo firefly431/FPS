@@ -43,6 +43,10 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VertexArray.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="basic.frag" />
+    <None Include="player.vert" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{283200F2-EE49-4F4C-9D73-B4A8EE3DEB77}</ProjectGuid>
     <RootNamespace>FPS</RootNamespace>
@@ -81,6 +85,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\s506571\Desktop\SFML-2.2-windows-vc10-32-bit\SFML-2.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-system-s-d.lib	;winmm.lib;sfml-network-s-d.lib	;sfml-system-s-d.lib;ws2_32.lib;sfml-audio-s-d.lib	;sndfile.lib;openal32.lib;sfml-window-s-d.lib	;opengl32.lib;gdi32.lib;sfml-graphics-s-d.lib	;sfml-window-s-d.lib;glew.lib;freetype.lib;jpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

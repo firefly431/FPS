@@ -67,6 +67,8 @@ protected:
 			glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)loadGLFunc("glGetShaderInfoLog");
 			glGetShaderiv = (PFNGLGETSHADERIVPROC)loadGLFunc("glGetShaderiv");
 			glShaderSource = (PFNGLSHADERSOURCEPROC)loadGLFunc("glShaderSource");
+			// etc
+			glGetError = (PFNGLGETERRORPROC)loadGLFunc("glGetError");
 		}
 #endif
 	} functions;

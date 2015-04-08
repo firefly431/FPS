@@ -1,3 +1,5 @@
+#include <SFML/Config.hpp>
+
 #ifdef SFML_SYSTEM_WINDOWS
 #include "glcorearb.h"
 
@@ -44,4 +46,6 @@ PFNGLCREATESHADERPROC glCreateShader;
 PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog;
 PFNGLGETSHADERIVPROC glGetShaderiv;
 PFNGLSHADERSOURCEPROC glShaderSource;
+// etc
+PFNGLGETERRORPROC glGetError;
 #endif

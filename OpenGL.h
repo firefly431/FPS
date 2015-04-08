@@ -52,6 +52,8 @@ extern PFNGLCREATESHADERPROC glCreateShader;
 extern PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog;
 extern PFNGLGETSHADERIVPROC glGetShaderiv;
 extern PFNGLSHADERSOURCEPROC glShaderSource;
+// etc
+extern PFNGLGETERRORPROC glGetError;
 #elif defined(SFML_SYSTEM_LINUX) || defined(SFML_SYSTEM_FREEBSD)
 #include <GL/gl3.h>
 #elif defined(SFML_SYSTEM_MACOS)

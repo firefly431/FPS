@@ -34,7 +34,7 @@ static sf::ContextSettings opengl_settings() {
     settings.stencilBits = 8;
     settings.antialiasingLevel = 0;
     settings.majorVersion = 3;
-    settings.minorVersion = 2;
+    settings.minorVersion = 3;
     return settings;
 }
 
@@ -66,6 +66,7 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
     players.push_back(Player(vector(-8, 0), -M_PI / 2));
     players.push_back(Player(vector(0, 8), M_PI));
     players.push_back(Player(vector(0, -8), 0));
+
 }
 
 void OpenGLRenderer::mainloop() {

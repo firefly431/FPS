@@ -66,7 +66,6 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
     players.push_back(Player(vector(-8, 0), -M_PI / 2));
     players.push_back(Player(vector(0, 8), M_PI));
     players.push_back(Player(vector(0, -8), 0));
-
 }
 
 void OpenGLRenderer::mainloop() {

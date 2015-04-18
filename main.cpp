@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "SFMLRenderer.h"
+#include "GLFWRenderer.h"
 
 int main() {
     try {

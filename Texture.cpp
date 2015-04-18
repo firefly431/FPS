@@ -5,7 +5,7 @@
 Texture::Texture(const std::string &fname, int texture) :
         texture(texture) {
     int width, height, _;
-    char *data = stbi_load(fname.c_str(), &width, &height, &_, 4);
+    unsigned char *data = stbi_load(fname.c_str(), &width, &height, &_, 4);
     glActiveTexture(GL_TEXTURE0 + texture);
     glGenTextures(1, &id);
     glBindTexture(GL_TEXTURE_2D, id);

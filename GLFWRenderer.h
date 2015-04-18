@@ -1,6 +1,7 @@
 #pragma once
 
-#include <unique_ptr>
+#include <memory>
+#include <vector>
 
 #include "OpenGL.h"
 

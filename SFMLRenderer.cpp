@@ -1,4 +1,4 @@
-#include "OpenGLRenderer.h"
+#include "SFMLRenderer.h"
 #include "OpenGL.h"
 
 #include <fstream>
@@ -38,7 +38,7 @@ static sf::ContextSettings opengl_settings() {
     return settings;
 }
 
-OpenGLRenderer::OpenGLRenderer(int width, int height) :
+SFMLRenderer::SFMLRenderer(int width, int height) :
         window(
             sf::VideoMode(width, height), "Spearthrowers",
             sf::Style::Default, opengl_settings()
@@ -68,7 +68,7 @@ OpenGLRenderer::OpenGLRenderer(int width, int height) :
     players.push_back(Player(vector(0, -8), 0));
 }
 
-void OpenGLRenderer::mainloop() {
+void SFMLRenderer::mainloop() {
     while (true) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -99,7 +99,7 @@ void OpenGLRenderer::mainloop() {
     }
 }
 
-void OpenGLRenderer::draw() {
+void SFMLRenderer::draw() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// draw the meshes
     camera.updateView(players[current_player], 1.0);
@@ -117,7 +117,7 @@ void OpenGLRenderer::draw() {
     window.display();
 }
 
-void OpenGLRenderer::resize(unsigned int width, unsigned int height) {
+void SFMLRenderer::resize(unsigned int width, unsigned int height) {
     camera.updateProj(45, (double)width / height, 0.5, 100);
     glViewport(0, 0, width, height);
 }

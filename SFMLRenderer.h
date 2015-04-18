@@ -10,9 +10,9 @@
 void *loadGLFunc(const char *name);
 #endif
 
-class OpenGLRenderer {
+class SFMLRenderer {
 public:
-	OpenGLRenderer(int width, int height);
+	SFMLRenderer(int width, int height);
 
     void mainloop();
 

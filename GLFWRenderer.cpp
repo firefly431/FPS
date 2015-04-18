@@ -45,6 +45,7 @@ GLFWRenderer::GLFWRenderer(unsigned int width, unsigned int height) : players(),
         Texture("default.png")
     ));
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
     glfwSwapInterval(1);
     glfwGetFramebufferSize(window, (int *)&width, (int *)&height);
     camera->updateView(0, 0, 1, 1, 0, 0, 0, 0, 1);

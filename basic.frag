@@ -11,7 +11,6 @@ in VertexData {
 out vec4 color_out;
 
 void main() {
-	/*
     vec4 diffuse = texture(tex, vertex_out.texcoord);
     vec4 specular = vec4(1.0);
     float shininess = 128.0;
@@ -27,6 +26,4 @@ void main() {
         spec = specular * pow(i, shininess);
     }
     color_out = vec4(diffuse * intensity + spec);
-	*/
-	color_out = vec4(1.0);
 }

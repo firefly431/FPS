@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <cmath>
 
 #include "OBJFile.h"
 
@@ -11,7 +12,7 @@ void error_callback(int error, const char *description) {
 }
 
 void resize_callback(GLFWwindow *window, int width, int height) {
-    GLFWRenderer *renderer = (GLFWRenderer *)window;
+    GLFWRenderer *renderer = (GLFWRenderer *)glfwGetWindowUserPointer(window);
     glfwGetFramebufferSize(window, &width, &height);
     renderer->resize(width, height);
 }
@@ -22,10 +23,10 @@ GLFWRenderer::GLFWRenderer(unsigned int width, unsigned int height) : players(),
         throw std::runtime_error("Failed to init GLFW");
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #ifndef NDEBUG
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+    //glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 #endif
     window = glfwCreateWindow(width, height, "Spearthrowers", NULL, NULL);
     if (!window) {
@@ -41,15 +42,15 @@ GLFWRenderer::GLFWRenderer(unsigned int width, unsigned int height) : players(),
             VertexShader("player.vert", 0),
             FragmentShader("basic.frag", 0)
         ),
-        OBJFile("teapotSmooth.obj").result(),
+        OBJFile("cube.obj").result(),
         Texture("default.png")
     ));
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glfwSwapInterval(1);
     glfwGetFramebufferSize(window, (int *)&width, (int *)&height);
-    camera->updateView(0, 0, 1, 1, 0, 0, 0, 0, 1);
-    camera->updateProj(45, (double)width / height, 0.5, 100);
+    camera->updateView(0, 0, 0, 1, 0, 0, 0, 0, 1);
+    resize(width, height);
     glfwSetWindowSizeCallback(window, resize_callback);
     // print context version
     std::cout << "OpenGL version: ";
@@ -67,13 +68,14 @@ void GLFWRenderer::mainloop() {
         // do stuff
         draw();
         glfwPollEvents();
+        players[current_player].rotate(0.01);
     }
 }
 
 void GLFWRenderer::draw() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// draw the meshes
-    camera->updateView(players[current_player], 1.0);
+    camera->updateView(players[current_player], 0.0);
     p_mesh->activate();
     p_mesh->updateVP(*camera);
     auto end = players.cend();

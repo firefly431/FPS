@@ -1,5 +1,7 @@
 #pragma once
 
+// vim: set ft=cpp:
+
 enum VertexAttribute {
     ATTRIBUTE_NONE,
     ATTRIBUTE_POSITION,

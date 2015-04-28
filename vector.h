@@ -25,7 +25,7 @@ struct vector {
     }
 
     inline vector operator-(const vector &other) const {
-        return vector(other.x - x, other.y - y);
+        return vector(x - other.x, y - other.y);
     }
 
     // actually dot product
@@ -34,7 +34,7 @@ struct vector {
     }
 
     inline vector operator/(const vector &other) const {
-        return vector(other.x / x, other.y / y);
+        return vector(x / other.x, y / other.y);
     }
 
     inline vector operator*(const double fac) const {
@@ -76,12 +76,12 @@ struct vector {
     }
 
     inline vector &operator/=(const double other) {
-        x *= other;
-        y *= other;
+        x /= other;
+        y /= other;
         return *this;
     }
 
-    inline double operator+(void) const {
+    inline operator double(void) const {
         return std::sqrt(x * x + y * y);
     }
 
@@ -90,11 +90,11 @@ struct vector {
     }
 
     inline void normalize(void) {
-        (*this) /= +(*this);
+        (*this) /= (double)(*this);
     }
 
     inline vector normalized(void) const {
-        return (*this) / +(*this);
+        return (*this) / (double)(*this);
     }
 
     inline double angle(void) const {
@@ -102,7 +102,7 @@ struct vector {
     }
 
     inline double dist(const vector &other) const {
-        return +(*this - other);
+        return (*this - other);
     }
 
     inline double dot(const vector &other) const {

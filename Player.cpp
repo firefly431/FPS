@@ -5,7 +5,7 @@ double Player::SIDE_SPEED = 0.1;
 double Player::BACK_SPEED = 0.1;
 double Player::ZERO_ANGLE = M_PI;
 
-Player::Player() : position(0, 0), heading(0) {}
+Player::Player() : position(0, 0), heading(0), input() {}
 Player::Player(const vector pos, const double h) : position(pos), heading(h) {}
 
 void Player::rotate(double amount) {
@@ -34,4 +34,12 @@ void Player::moveBack() {
 
 double Player::getRotation() const {
     return heading - Player::ZERO_ANGLE;
+}
+
+void Player::move() {
+	rotate(input.rotation);
+	if (input.up) moveForward();
+	if (input.down) moveBack();
+	if (input.left) moveLeft();
+	if (input.right) moveRight();
 }

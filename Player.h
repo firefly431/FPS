@@ -15,15 +15,23 @@ class Player {
 public:
     Player();
     Player(const vector pos, const double h);
-    void rotate(double amount);
-    void moveForward();
-    void moveLeft();
-    void moveRight();
-    void moveBack();
+	
+	struct {
+		bool up, left, right, down;
+		double rotation;
+	} input;
+
+	void move();
+
     static double MOVEMENT_SPEED, SIDE_SPEED, BACK_SPEED;
     static double ZERO_ANGLE;
 protected:
     vector position;
     double heading;
     double getRotation() const;
+	void rotate(double amount);
+    void moveForward();
+    void moveLeft();
+    void moveRight();
+    void moveBack();
 };

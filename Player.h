@@ -1,6 +1,8 @@
 #pragma once
 
+#include <vector>
 #include "vector.h"
+#include "Circle.h"
 
 /*
  * Transformation matrix:
@@ -21,13 +23,17 @@ public:
 		double rotation;
 	} input;
 
-	void move();
+	vector position;
+    double heading;
+
+	void move(const std::vector<Line> &walls);
+
+	Circle getCollisionBounds() const;
 
     static double MOVEMENT_SPEED, SIDE_SPEED, BACK_SPEED;
     static double ZERO_ANGLE;
+	static double COLLISION_RADIUS;
 protected:
-    vector position;
-    double heading;
     double getRotation() const;
 	void rotate(double amount);
     void moveForward();

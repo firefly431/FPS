@@ -15,5 +15,7 @@ public:
 
 	Spear(vector head, double direction);
 
-	void move(std::vector<Player> &players, std::vector<Line> &walls);
+	void move(std::vector<Player> &players, const std::vector<Line> &walls);
+
+	Line getCollisionBounds() const;
 };

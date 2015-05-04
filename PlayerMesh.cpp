@@ -4,6 +4,7 @@
 
 PlayerMesh::PlayerMesh(ShaderProgram &&prog, VertexArray &&vao, Texture &&tex)
 : Mesh(std::move(prog), std::move(vao), std::move(tex)), model() {
+    this->prog.activate();
     model_loc = this->prog.getUniformLocation("model");
     model[0] = model[5] = model[10] = model[15] = 1;
 }

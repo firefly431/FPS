@@ -6,7 +6,9 @@
 
 #include "OBJFile.h"
 
-void error_callback(int error, const char *description) {
+static const double RADS_PER_PX = -0.01;
+
+static void error_callback(int error, const char *description) {
     std::cerr << "GLFW error!" << std::endl;
     std::cerr << description << std::endl;
 }
@@ -15,6 +17,38 @@ void resize_callback(GLFWwindow *window, int width, int height) {
     GLFWRenderer *renderer = (GLFWRenderer *)glfwGetWindowUserPointer(window);
     glfwGetFramebufferSize(window, &width, &height);
     renderer->resize(width, height);
+}
+
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    GLFWRenderer *renderer = (GLFWRenderer *)glfwGetWindowUserPointer(window);
+    switch (key) {
+    case GLFW_KEY_ESCAPE:
+        glfwSetWindowShouldClose(window, GL_TRUE);
+        break;
+    case GLFW_KEY_W:
+        renderer->players[renderer->current_player].input.up = action != GLFW_RELEASE;
+        break;
+    case GLFW_KEY_S:
+        renderer->players[renderer->current_player].input.down = action != GLFW_RELEASE;
+        break;
+    case GLFW_KEY_A:
+        renderer->players[renderer->current_player].input.left = action != GLFW_RELEASE;
+        break;
+    case GLFW_KEY_D:
+        renderer->players[renderer->current_player].input.right = action != GLFW_RELEASE;
+        break;
+    }
+}
+
+void cursor_callback(GLFWwindow *window, double xpos, double ypos) {
+    // doubles can hold up to around 9e15 exactly
+    // but just to be safe let's clamp it at 1e5
+    if (xpos > 1e5 || xpos < -1e5) {
+        xpos = fmod(xpos, 1e10);
+        glfwSetCursorPos(window, xpos, ypos);
+    }
+    GLFWRenderer *renderer = (GLFWRenderer *)glfwGetWindowUserPointer(window);
+    renderer->players[renderer->current_player].heading = fmod(xpos * RADS_PER_PX, 2 * M_PI);
 }
 
 GLFWRenderer::GLFWRenderer(unsigned int width, unsigned int height) : players(), current_player(0) {
@@ -33,6 +67,9 @@ GLFWRenderer::GLFWRenderer(unsigned int width, unsigned int height) : players(),
         glfwTerminate();
         throw std::runtime_error("Failed to create window");
     }
+    glfwSetKeyCallback(window, key_callback);
+    glfwSetCursorPosCallback(window, cursor_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     // let callbacks access us
     glfwSetWindowUserPointer(window, (void *)this);
     glfwMakeContextCurrent(window);
@@ -42,7 +79,7 @@ GLFWRenderer::GLFWRenderer(unsigned int width, unsigned int height) : players(),
             VertexShader("player.vert", 0),
             FragmentShader("basic.frag", 0)
         ),
-        OBJFile("cube.obj").result(),
+        OBJFile("teapotSmooth.obj").result(),
         Texture("default.png")
     ));
     glEnable(GL_DEPTH_TEST);
@@ -54,7 +91,8 @@ GLFWRenderer::GLFWRenderer(unsigned int width, unsigned int height) : players(),
     glfwSetWindowSizeCallback(window, resize_callback);
     // print context version
     std::cout << "OpenGL version: ";
-    std::cout << glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MAJOR) << "." << glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MAJOR) << std::endl;
+    std::cout << glGetString(GL_VERSION) << std::endl;
+    std::cout << "GLFW version: " << glfwGetVersionString() << std::endl;
     // add some players
     players.push_back(Player(vector(), 0));
     players.push_back(Player(vector(8, 0), M_PI / 2));
@@ -64,18 +102,18 @@ GLFWRenderer::GLFWRenderer(unsigned int width, unsigned int height) : players(),
 }
 
 void GLFWRenderer::mainloop() {
+    std::vector<Line> walls;
     while (!glfwWindowShouldClose(window)) {
-        // do stuff
+        players[current_player].move(walls);
         draw();
         glfwPollEvents();
-        players[current_player].rotate(0.01);
     }
 }
 
 void GLFWRenderer::draw() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// draw the meshes
-    camera->updateView(players[current_player], 0.0);
+    camera->updateView(players[current_player], 1.0);
     p_mesh->activate();
     p_mesh->updateVP(*camera);
     auto end = players.cend();

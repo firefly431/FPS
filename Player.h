@@ -17,14 +17,13 @@ class Player {
 public:
     Player();
     Player(const vector pos, const double h);
-	
-	struct {
-		bool up, left, right, down;
-		double rotation;
-	} input;
 
 	vector position;
     double heading;
+
+	struct {
+		bool up, left, right, down;
+	} input;
 
 	void move(const std::vector<Line> &walls);
 
@@ -33,9 +32,9 @@ public:
     static double MOVEMENT_SPEED, SIDE_SPEED, BACK_SPEED;
     static double ZERO_ANGLE;
 	static double COLLISION_RADIUS;
-protected:
     double getRotation() const;
 	void rotate(double amount);
+protected:
     void moveForward();
     void moveLeft();
     void moveRight();

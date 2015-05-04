@@ -44,8 +44,8 @@ GLuint OBJFile::read_vertex(std::istream &in) {
 }
 
 // figured out the problem with triangulation
-OBJFile::OBJFile(std::istream &in) {load(in);}
-OBJFile::OBJFile(const char *fname) { // super hack
+OBJFile::OBJFile(std::istream &in) : idx(0) {load(in);}
+OBJFile::OBJFile(const char *fname) : idx(0) { // super hack
     std::ifstream stream(fname);
     load(stream);
 }

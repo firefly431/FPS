@@ -11,6 +11,8 @@
 // TODO: refactor scene variables out of renderer
 
 class GLFWRenderer {
+    friend void key_callback(GLFWwindow *, int, int, int, int);
+    friend void cursor_callback(GLFWwindow *, double, double);
 public:
     GLFWRenderer(unsigned int width, unsigned int height);
     ~GLFWRenderer();

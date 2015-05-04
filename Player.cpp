@@ -8,8 +8,12 @@ double Player::BACK_SPEED = 0.1;
 double Player::ZERO_ANGLE = M_PI;
 double Player::COLLISION_RADIUS = 50;
 
-Player::Player() : position(0, 0), heading(0), input() {}
-Player::Player(const vector pos, const double h) : position(pos), heading(h) {}
+Player::Player() : position(0, 0), heading(0), input() {
+    input.up = input.down = input.left = input.right = false;
+}
+Player::Player(const vector pos, const double h) : position(pos), heading(h) {
+    input.up = input.down = input.left = input.right = false;
+}
 
 void Player::rotate(double amount) {
     heading += amount;
@@ -40,7 +44,6 @@ double Player::getRotation() const {
 }
 
 void Player::move(const std::vector<Line> &walls) {
-	rotate(input.rotation);
 	if (input.up) moveForward();
 	if (input.down) moveBack();
 	if (input.left) moveLeft();

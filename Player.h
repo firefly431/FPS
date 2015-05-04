@@ -18,22 +18,22 @@ public:
     Player();
     Player(const vector pos, const double h);
 
-	vector position;
+    vector position;
     double heading;
 
-	struct {
-		bool up, left, right, down;
-	} input;
+    struct {
+        bool up, left, right, down;
+    } input;
 
-	void move(const std::vector<Line> &walls);
+    void move(const std::vector<Line> &walls);
 
-	Circle getCollisionBounds() const;
+    Circle getCollisionBounds() const;
 
     static double MOVEMENT_SPEED, SIDE_SPEED, BACK_SPEED;
     static double ZERO_ANGLE;
-	static double COLLISION_RADIUS;
+    static double COLLISION_RADIUS;
     double getRotation() const;
-	void rotate(double amount);
+    void rotate(double amount);
 protected:
     void moveForward();
     void moveLeft();

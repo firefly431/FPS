@@ -7,11 +7,17 @@
 #include "Circle.h"
 #include "Line.h"
 
+void TopDownRenderer::drawLine(const Line &l) {
+    shapes.wall[0].position.x = l.p1.x;
+    shapes.wall[0].position.y = l.p1.y;
+    shapes.wall[1].position.x = l.p2.x;
+    shapes.wall[1].position.y = l.p2.y;
+    window.draw(shapes.wall, 2, sf::Lines);
+}
+
 void TopDownRenderer::drawPlayer(const Player &p) {
 	shapes.player.setPosition(p.position.x, p.position.y);
 	window.draw(shapes.player);
-
-	// todo: draw heading
 }
 
 TopDownRenderer::TopDownRenderer(int width, int height)
@@ -26,12 +32,22 @@ TopDownRenderer::TopDownRenderer(int width, int height)
 #if _MSC_VER < 1800
 	scene.players.push_back(Player(vector(100, 100), 0));
 	scene.players.push_back(Player(vector(200, 100), 0));
+    scene.walls.push_back(Line(vector(100, 200), vector(200, 300)));
+    scene.walls.push_back(Line(vector(200, 300), vector(300, 200)));
 #else
 	scene.players.emplace_back(vector(100, 100), 0);
 	scene.players.emplace_back(vector(200, 100), 0);
+    scene.walls.emplace_back(vector(100, 200), vector(200, 300));
+    scene.walls.emplace_back(vector(200, 300), vector(300, 200));
 #endif
+}
+
+void TopDownRenderer::mainloop() {
 	while (window.isOpen()) {
 		sf::Event ev;
+        auto mpos_ = sf::Mouse::getPosition(window);
+        auto mpos = vector(mpos_.x, mpos_.y);
+        scene.players[0].heading = (mpos - scene.players[0].position).angle();
 		while (window.pollEvent(ev)) {
 			if (ev.type == sf::Event::Closed)
 				window.close();
@@ -43,6 +59,15 @@ TopDownRenderer::TopDownRenderer(int width, int height)
 			}
 		}
 		window.clear();
+#if _MSC_VER < 1800
+		auto w_it = scene.walls.end();
+		for (auto it = scene.walls.begin(); it != w_it; it++) {
+			auto &w = *it;
+#else
+		for (Line &w : scene.walls) {
+#endif
+            drawLine(w);
+		}
 #if _MSC_VER < 1800
 		auto e_it = scene.players.end();
 		for (auto it = scene.players.begin(); it != e_it; it++) {

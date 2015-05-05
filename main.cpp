@@ -1,12 +1,12 @@
 #include <iostream>
 #include <stdexcept>
 
-//#include "TopDownRenderer.h"
-#include "GLFWRenderer.h"
+#include "TopDownRenderer.h"
+//#include "GLFWRenderer.h"
 
 int main() {
     try {
-        GLFWRenderer renderer(640, 480);
+        TopDownRenderer renderer(640, 480);
         renderer.mainloop();
     } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;

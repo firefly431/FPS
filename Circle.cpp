@@ -25,6 +25,6 @@ bool Circle::intersects(const Line &other, vector *norm) {
 	auto offset = proj - position;
 	double cdist = ((double)offset - radius);
 	if (norm)
-		*norm = offset.normalized() * cdist;
+		*norm = offset.normalized() * (cdist - 1e-5);
 	return cdist < 0;
 }

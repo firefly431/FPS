@@ -1,18 +1,21 @@
 #include "Player.h"
 
+#include "Spear.h"
+
 #include <iostream>
 
-double Player::MOVEMENT_SPEED = 0.3;
-double Player::SIDE_SPEED = 0.1;
-double Player::BACK_SPEED = 0.1;
-double Player::ZERO_ANGLE = M_PI;
-double Player::COLLISION_RADIUS = 50;
+const double Player::MOVEMENT_SPEED = 0.3;
+const double Player::SIDE_SPEED = 0.1;
+const double Player::BACK_SPEED = 0.1;
+const double Player::ZERO_ANGLE = M_PI;
+const double Player::COLLISION_RADIUS = 50;
+const int Player::FIRE_RATE = 30;
 
 Player::Player() : position(0, 0), heading(0), input() {
-    input.up = input.down = input.left = input.right = false;
+    input.up = input.down = input.left = input.right = input.fire = false;
 }
 Player::Player(const vector pos, const double h) : position(pos), heading(h) {
-    input.up = input.down = input.left = input.right = false;
+    input.up = input.down = input.left = input.right = input.fire = false;
 }
 
 void Player::rotate(double amount) {
@@ -43,12 +46,23 @@ double Player::getRotation() const {
     return heading - Player::ZERO_ANGLE;
 }
 
-void Player::move(const std::vector<Line> &walls) {
+void Player::move(const std::vector<Line> &walls, std::list<Spear> &spears) {
 	if (input.up) moveForward();
 	if (input.down) moveBack();
 	if (input.left) moveLeft();
 	if (input.right) moveRight();
 	Circle circ(getCollisionBounds());
+    if (input.fire)
+        if (fire_rate <= 0) {
+            fire_rate = FIRE_RATE;
+#if _MSC_VER < 1800
+            spears.push_back(Spear(position + vector(heading) * (COLLISION_RADIUS + 1), heading));
+#else
+            spears.emplace_back(position + vector(heading) * (COLLISION_RADIUS + 1), heading);
+#endif
+        } else fire_rate--;
+    else
+        if (--fire_rate < 0) fire_rate = -1;
 	int colcount = 0;
 	if (false) {
 redo_collision:
@@ -73,4 +87,8 @@ redo_collision:
 
 Circle Player::getCollisionBounds() const {
 	return Circle(position, COLLISION_RADIUS);
+}
+
+void Player::hit(const Spear &spear) {
+    // do nothing for now
 }

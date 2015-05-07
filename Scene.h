@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <list>
 
 #include "Player.h"
 #include "Spear.h"
@@ -10,7 +11,7 @@
 class Scene {
     friend class TopDownRenderer;
     std::vector<Player> players;
-    std::vector<Spear> spears;
+    std::list<Spear> spears;
     std::vector<Line> walls;
     std::vector<vector> spawnPoints;
 public:

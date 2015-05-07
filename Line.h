@@ -13,6 +13,6 @@ public:
         return p2 - p1;
     }
 
-    bool intersects(const Line &other, vector *intpt);
+    bool intersects(const Line &other, vector *intpt) const;
 };
 

@@ -6,6 +6,7 @@
 
 #include "Circle.h"
 #include "Line.h"
+#include "Spear.h"
 
 void TopDownRenderer::drawLine(const Line &l) {
     shapes.wall[0].position.x = l.p1.x;
@@ -23,6 +24,7 @@ void TopDownRenderer::drawPlayer(const Player &p) {
 TopDownRenderer::TopDownRenderer(int width, int height)
 	: scene(), window(sf::VideoMode(width, height), "Top Down View"), shapes()
 {
+    window.setVerticalSyncEnabled(true);
 	shapes.player = sf::CircleShape(Player::COLLISION_RADIUS);
 	shapes.player.setFillColor(sf::Color::Yellow);
 	shapes.player.setOrigin(50, 50);
@@ -57,6 +59,12 @@ void TopDownRenderer::mainloop() {
 			else if (ev.type == sf::Event::KeyReleased) {
 				scene.players[0].input.up = false;
 			}
+            else if (ev.type == sf::Event::MouseButtonPressed) {
+                scene.players[0].input.fire = true;
+            }
+            else if (ev.type == sf::Event::MouseButtonReleased) {
+                scene.players[0].input.fire = false;
+            }
 		}
 		window.clear();
 #if _MSC_VER < 1800
@@ -76,7 +84,15 @@ void TopDownRenderer::mainloop() {
 		for (Player &p : scene.players) {
 #endif
 			drawPlayer(p);
-			p.move(scene.walls);
+			p.move(scene.walls, scene.spears);
+		}
+		for (auto it = scene.spears.begin(); it != scene.spears.end();) {
+			auto &s = *it;
+            drawLine(s.getCollisionBounds());
+            if (s.move(scene.players, scene.walls))
+                scene.spears.erase(it);
+            else
+                it++;
 		}
 		window.display();
 	}

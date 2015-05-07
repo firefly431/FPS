@@ -11,41 +11,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Buffer.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="glcorearb.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="OBJFile.h" />
-    <ClInclude Include="OpenGL.h" />
-    <ClInclude Include="OpenGLRenderer.h" />
+    <ClInclude Include="Circle.h" />
+    <ClInclude Include="Line.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayerMesh.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="ShaderProgram.h" />
-    <ClInclude Include="Texture.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="Spear.h" />
+    <ClInclude Include="TopDownRenderer.h" />
     <ClInclude Include="vector.h" />
-    <ClInclude Include="VertexArray.h" />
-    <ClInclude Include="VertexAttribute.h" />
-    <ClInclude Include="wglext.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Buffer.cpp" />
-    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Circle.cpp" />
+    <ClCompile Include="Line.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="OBJFile.cpp" />
-    <ClCompile Include="OpenGL.cpp" />
-    <ClCompile Include="OpenGLRenderer.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayerMesh.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="ShaderProgram.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="VertexArray.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="basic.frag" />
-    <None Include="player.vert" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Spear.cpp" />
+    <ClCompile Include="TopDownRenderer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{283200F2-EE49-4F4C-9D73-B4A8EE3DEB77}</ProjectGuid>

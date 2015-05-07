@@ -1,8 +1,11 @@
 #pragma once
 
 #include <vector>
+#include <list>
 #include "vector.h"
 #include "Circle.h"
+
+class Spear;
 
 /*
  * Transformation matrix:
@@ -20,20 +23,23 @@ public:
 
     vector position;
     double heading;
+    int fire_rate;
 
     struct {
-        bool up, left, right, down;
+        bool up, left, right, down, fire;
     } input;
 
-    void move(const std::vector<Line> &walls);
+    void move(const std::vector<Line> &walls, std::list<Spear> &spears);
 
     Circle getCollisionBounds() const;
 
-    static double MOVEMENT_SPEED, SIDE_SPEED, BACK_SPEED;
-    static double ZERO_ANGLE;
-    static double COLLISION_RADIUS;
+    static const double MOVEMENT_SPEED, SIDE_SPEED, BACK_SPEED;
+    static const double ZERO_ANGLE;
+    static const double COLLISION_RADIUS;
+    static const int FIRE_RATE;
     double getRotation() const;
     void rotate(double amount);
+    void hit(const Spear &spear);
 protected:
     void moveForward();
     void moveLeft();

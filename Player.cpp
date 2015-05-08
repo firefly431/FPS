@@ -8,7 +8,7 @@ const double Player::MOVEMENT_SPEED = 0.3;
 const double Player::SIDE_SPEED = 0.1;
 const double Player::BACK_SPEED = 0.1;
 const double Player::ZERO_ANGLE = M_PI;
-const double Player::COLLISION_RADIUS = 50;
+const double Player::COLLISION_RADIUS = 20;
 const int Player::FIRE_RATE = 30;
 
 Player::Player() : position(0, 0), heading(0), input() {

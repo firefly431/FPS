@@ -27,7 +27,7 @@ TopDownRenderer::TopDownRenderer(int width, int height)
     window.setVerticalSyncEnabled(true);
 	shapes.player = sf::CircleShape(Player::COLLISION_RADIUS);
 	shapes.player.setFillColor(sf::Color::Yellow);
-	shapes.player.setOrigin(50, 50);
+    shapes.player.setOrigin(Player::COLLISION_RADIUS, Player::COLLISION_RADIUS);
 	shapes.wall[0] = sf::Vertex(sf::Vector2f(), sf::Color::Green);
 	shapes.wall[1] = sf::Vertex(sf::Vector2f(), sf::Color::Green);
 	// test players
@@ -89,9 +89,10 @@ void TopDownRenderer::mainloop() {
 		for (auto it = scene.spears.begin(); it != scene.spears.end();) {
 			auto &s = *it;
             drawLine(s.getCollisionBounds());
-            if (s.move(scene.players, scene.walls))
-                scene.spears.erase(it);
-            else
+            if (!s.move(scene.players, scene.walls)) {
+                auto old_it = it++;
+                scene.spears.erase(old_it);
+            } else
                 it++;
 		}
 		window.display();

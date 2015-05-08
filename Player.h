@@ -6,6 +6,7 @@
 #include "Circle.h"
 
 class Spear;
+class PlayerController;
 
 /*
  * Transformation matrix:
@@ -40,7 +41,9 @@ public:
     double getRotation() const;
     void rotate(double amount);
     void hit(const Spear &spear);
+    void setController(PlayerController &&);
 protected:
+    std::unique_ptr<PlayerController> controller;
     void moveForward();
     void moveLeft();
     void moveRight();

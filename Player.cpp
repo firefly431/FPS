@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include "Spear.h"
+#include "PlayerController.h"
 
 #include <iostream>
 
@@ -11,10 +12,10 @@ const double Player::ZERO_ANGLE = M_PI;
 const double Player::COLLISION_RADIUS = 20;
 const int Player::FIRE_RATE = 30;
 
-Player::Player() : position(0, 0), heading(0), input() {
+Player::Player() : position(0, 0), heading(0), input(), controller() {
     input.up = input.down = input.left = input.right = input.fire = false;
 }
-Player::Player(const vector pos, const double h) : position(pos), heading(h) {
+Player::Player(const vector pos, const double h) : position(pos), heading(h), controller() {
     input.up = input.down = input.left = input.right = input.fire = false;
 }
 
@@ -47,6 +48,8 @@ double Player::getRotation() const {
 }
 
 void Player::move(const std::vector<Line> &walls, std::list<Spear> &spears) {
+    if (controller)
+        controller->update(*this);
 	if (input.up) moveForward();
 	if (input.down) moveBack();
 	if (input.left) moveLeft();
@@ -91,4 +94,8 @@ Circle Player::getCollisionBounds() const {
 
 void Player::hit(const Spear &spear) {
     // do nothing for now
+}
+
+void Player::setController(PlayerController &&ct) {
+    controller.reset(&ct);
 }

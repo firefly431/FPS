@@ -6,6 +6,7 @@
 #include <utility>
 #include <algorithm>
 #include <vector>
+#include <unordered_map>
 
 typedef MapGraph::Node *NodeRef;
 
@@ -174,6 +175,51 @@ struct PriorityQueue {
     }
 };
 
+inline static double heuristic(NodeRef a, NodeRef b) {
+    return a->position - b->position;
+}
+
 void AIController::calculate_path(NodeRef pos, NodeRef target) {
-    //
+    PriorityQueue Q(nodes.nodes.size());
+    Q.insert(pos, 0);
+    std::unordered_map<NodeRef, NodeRef> prev;
+    std::unordered_map<NodeRef, double> cost;
+    prev[pos] = pos;
+    cost[pos] = 0;
+    while (!Q.data.empty()) {
+        NodeRef cur = Q.data.front().second;
+        if (cur == target) {
+            // reconstruct the path
+            // path is already cleared for us
+            path.push_front(target);
+            while (target != pos) {
+                target = prev[target];
+                path.push_front(target);
+            }
+            return;
+        }
+        Q.remove();
+#if _MSC_VER < 1800
+        auto e_it = cur->edges.end();
+        for (auto it = cur->edges.begin(); it != e_it; it++) {
+            auto &edge = *it;
+#if 0
+        }
+#endif
+#else
+        for (auto &edge : cur->edges) {
+#endif
+            NodeRef next = edge.to;
+            double ncost = cost[cur] + edge.weight;
+            int i = Q.search(next);
+            if (!i || ncost < Q.get(i)) {
+                cost[next] = ncost;
+                prev[next] = cur;
+                if (i)
+                    Q.decrease(i, ncost + heuristic(next, target));
+                else
+                    Q.insert(next, ncost + heuristic(next, target));
+            }
+        }
+    }
 }

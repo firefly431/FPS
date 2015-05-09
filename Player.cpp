@@ -12,10 +12,10 @@ const double Player::ZERO_ANGLE = M_PI;
 const double Player::COLLISION_RADIUS = 1;
 const int Player::FIRE_RATE = 30;
 
-Player::Player() : position(0, 0), heading(0), input(), controller() {
+Player::Player() : position(0, 0), heading(0), fire_rate(0), input(), controller() {
     input.up = input.down = input.left = input.right = input.fire = false;
 }
-Player::Player(const vector pos, const double h) : position(pos), heading(h), controller() {
+Player::Player(const vector pos, const double h) : position(pos), heading(h), fire_rate(0), input(), controller() {
     input.up = input.down = input.left = input.right = input.fire = false;
 }
 
@@ -55,7 +55,7 @@ void Player::move(const std::vector<Line> &walls, std::list<Spear> &spears) {
 	if (input.left) moveLeft();
 	if (input.right) moveRight();
 	Circle circ(getCollisionBounds());
-    if (input.fire)
+    if (input.fire) {
         if (fire_rate <= 0) {
             fire_rate = FIRE_RATE;
 #if _MSC_VER < 1800
@@ -63,7 +63,10 @@ void Player::move(const std::vector<Line> &walls, std::list<Spear> &spears) {
 #else
             spears.emplace_back(position, heading, this);
 #endif
-        } else fire_rate--;
+        } else {
+            fire_rate--;
+        }
+    }
     else
         if (--fire_rate < 0) fire_rate = -1;
 	int colcount = 0;

@@ -6,6 +6,8 @@
 
 #include "OBJFile.h"
 
+#include "Spear.h"
+
 static const double RADS_PER_PX = -0.01;
 
 static void error_callback(int error, const char *description) {
@@ -103,8 +105,9 @@ GLFWRenderer::GLFWRenderer(unsigned int width, unsigned int height) : players(),
 
 void GLFWRenderer::mainloop() {
     std::vector<Line> walls;
+    std::list<Spear> spears;
     while (!glfwWindowShouldClose(window)) {
-        players[current_player].move(walls);
+        players[current_player].move(walls, spears);
         draw();
         glfwPollEvents();
     }

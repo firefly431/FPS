@@ -5,8 +5,9 @@
 #include "vector.h"
 #include "Circle.h"
 
+#include "PlayerController.h"
+
 class Spear;
-class PlayerController;
 
 /*
  * Transformation matrix:

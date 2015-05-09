@@ -13,7 +13,6 @@ class Scene {
     std::vector<Player> players;
     std::list<Spear> spears;
     std::vector<Line> walls;
-    std::vector<vector> spawnPoints;
 public:
     // common methods
     // server methods

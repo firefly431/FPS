@@ -13,5 +13,5 @@ void MapGraph::Node::addEdge(Node *to) {
 MapGraph::Node *MapGraph::addNode(vector position, double radius) {
     Node n(position, radius);
     nodes.push_back(n);
-    return &n;
+    return &nodes.back();
 }

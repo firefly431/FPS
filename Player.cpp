@@ -99,6 +99,6 @@ void Player::hit(const Spear &spear) {
     // do nothing for now
 }
 
-void Player::setController(PlayerController &&ct) {
-    controller.reset(&ct);
+void Player::setController(PlayerController *ct) {
+    controller.reset(ct);
 }

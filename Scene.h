@@ -20,4 +20,6 @@ public:
     void loadGraph(const std::string &fname);
     void update();
     vector addPlayer(); // returns spawn point
+protected:
+    bool wouldCollide(const vector &);
 };

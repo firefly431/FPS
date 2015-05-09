@@ -112,3 +112,42 @@ void Scene::loadGraph(const std::string &fname) {
         }
     }
 }
+
+bool Scene::wouldCollide(const vector &v) {
+#if _MSC_VER < 1800
+    auto p_it = players.end();
+    for (auto it = players.begin(); it != p_it; it++) {
+        auto &p = *it;
+#if 0
+    }
+#endif
+#else
+    for (auto &p : players) {
+#endif
+        if ((p.position - v).sqr() < Player::COLLISION_RADIUS * Player::COLLISION_RADIUS) return true;
+    }
+    return false;
+}
+
+vector Scene::addPlayer() {
+    vector ret;
+#if _MSC_VER < 1800
+    auto c_it = graph.nodes.end();
+    for (auto it = graph.nodes.begin(); it != c_it; it++) {
+        auto &n = *it;
+#if 0
+    }
+#endif
+#else
+    for (auto &n : graph.nodes) {
+#endif
+        if (!wouldCollide(n.position))
+            ret = n.position;
+    }
+#if _MSC_VER < 1800
+    players.push_back(Player(ret, 0));
+#else
+    players.emplace_back(ret, 0);
+#endif
+    return ret;
+}

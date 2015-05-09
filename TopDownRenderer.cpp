@@ -7,6 +7,8 @@
 #include "Circle.h"
 #include "Line.h"
 #include "Spear.h"
+#include "AIController.h"
+#include "Quad.h"
 
 void TopDownRenderer::drawLine(const Line &l, const sf::Color &c) {
     shapes.wall[0].position.x = l.p1.x;
@@ -27,6 +29,12 @@ void TopDownRenderer::drawPoint(const vector &v) {
     window.draw(shapes.point);
 }
 
+void TopDownRenderer::drawTri(const Triangle &t, const sf::Color &color) {
+    drawLine(Line(t.a, t.b), color);
+    drawLine(Line(t.b, t.c), color);
+    drawLine(Line(t.a, t.c), color);
+}
+
 TopDownRenderer::TopDownRenderer(int width, int height)
 	: scene(), window(sf::VideoMode(width, height), "Top Down View"), shapes()
 {
@@ -39,12 +47,9 @@ TopDownRenderer::TopDownRenderer(int width, int height)
     shapes.point.setOrigin(0.1, 0.1);
 	shapes.wall[0] = sf::Vertex(sf::Vector2f(), sf::Color::Green);
 	shapes.wall[1] = sf::Vertex(sf::Vector2f(), sf::Color::Green);
-	// test players
-#if _MSC_VER < 1800
-	scene.players.push_back(Player(vector(0, 0), 0));
-#else
-	scene.players.emplace_back(vector(0, 0), 0);
-#endif
+    scene.addPlayer();
+    scene.addPlayer();
+    scene.players[1].setController(new AIController(scene.players[0], scene.graph));
     sf::View view;
     view.setSize(sf::Vector2f(28.8 * width/height, 28.8));
     view.setCenter(sf::Vector2f(0, 0));
@@ -77,9 +82,36 @@ void TopDownRenderer::mainloop() {
 		}
 		window.clear();
 #if _MSC_VER < 1800
+        auto n_it = scene.graph.nodes.end();
+        for (auto it = scene.graph.nodes.begin(); it != n_it; it++) {
+            const auto &nn = *it;
+#if 0
+        }
+#endif
+#else
+        for (const auto &nn : scene.graph.nodes) {
+#endif
+            //drawPoint(nn.position);
+            Triangle *tri = dynamic_cast<Triangle *>(nn.shape.get());
+            if (tri == nullptr) {
+                Quad *quad = (Quad *)nn.shape.get();
+                drawTri(quad->a, sf::Color::Red);
+                drawTri(quad->b, sf::Color::Red);
+            } else {
+                drawTri(*tri, sf::Color::Blue);
+            }
+            for (const auto &ne : nn.edges) {
+                drawLine(Line(nn.position,
+                              ne.to->position), sf::Color::White);
+            }
+        }
+#if _MSC_VER < 1800
 		auto w_it = scene.walls.end();
 		for (auto it = scene.walls.begin(); it != w_it; it++) {
 			auto &w = *it;
+#if 0
+        }
+#endif
 #else
 		for (Line &w : scene.walls) {
 #endif
@@ -89,6 +121,9 @@ void TopDownRenderer::mainloop() {
 		auto e_it = scene.players.end();
 		for (auto it = scene.players.begin(); it != e_it; it++) {
 			auto &p = *it;
+#if 0
+        }
+#endif
 #else
 		for (Player &p : scene.players) {
 #endif
@@ -104,13 +139,9 @@ void TopDownRenderer::mainloop() {
             } else
                 it++;
 		}
-        for (const auto &nn : scene.graph.nodes) {
-            drawPoint(nn.position);
-            for (const auto &ne : nn.edges) {
-                drawLine(Line(nn.position,
-                              ne.to->position), sf::Color::White);
-            }
-        }
+        const auto &aic = *((AIController *)scene.players[1].controller.get());
+        if (!aic.path.empty())
+            drawPoint(aic.path.back()->position);
 		window.display();
 	}
 }

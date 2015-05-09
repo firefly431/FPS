@@ -14,10 +14,10 @@ void MapGraph::Node::addEdge(Node *to) {
 }
 
 MapGraph::Node *MapGraph::addNode(vector position, Shape *shape) {
-#if _MSC_VER < 1800
+#if defined(_MSC_VER) && _MSC_VER < 1800
     nodes.emplace_back(Node(position, shape));
 #else
-    nodes.emplace_back(position, std::move(shape));
+    nodes.emplace_back(position, shape);
 #endif
     return &nodes.back();
 }

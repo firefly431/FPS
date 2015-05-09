@@ -32,22 +32,21 @@ TopDownRenderer::TopDownRenderer(int width, int height)
 	shapes.wall[1] = sf::Vertex(sf::Vector2f(), sf::Color::Green);
 	// test players
 #if _MSC_VER < 1800
-	scene.players.push_back(Player(vector(100, 100), 0));
-	scene.players.push_back(Player(vector(200, 100), 0));
-    scene.walls.push_back(Line(vector(100, 200), vector(200, 300)));
-    scene.walls.push_back(Line(vector(200, 300), vector(300, 200)));
+	scene.players.push_back(Player(vector(0, 0), 0));
 #else
-	scene.players.emplace_back(vector(100, 100), 0);
-	scene.players.emplace_back(vector(200, 100), 0);
-    scene.walls.emplace_back(vector(100, 200), vector(200, 300));
-    scene.walls.emplace_back(vector(200, 300), vector(300, 200));
+	scene.players.emplace_back(vector(0, 0), 0);
 #endif
+    sf::View view;
+    view.setSize(sf::Vector2f(28.8 * width/height, 28.8));
+    view.setCenter(sf::Vector2f(0, 0));
+    window.setView(view);
+    scene.loadWalls("walls.obj");
 }
 
 void TopDownRenderer::mainloop() {
 	while (window.isOpen()) {
 		sf::Event ev;
-        auto mpos_ = sf::Mouse::getPosition(window);
+        auto mpos_ = window.mapPixelToCoords(sf::Mouse::getPosition(window));
         auto mpos = vector(mpos_.x, mpos_.y);
         scene.players[0].heading = (mpos - scene.players[0].position).angle();
 		while (window.pollEvent(ev)) {

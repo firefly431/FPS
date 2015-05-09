@@ -58,8 +58,8 @@ void OBJFile::load(std::istream &in1) {
     while (in1.good()) {
         std::getline(in1, line);
         std::istringstream in(line);
-        in >> type;
 		if (line == "") continue;
+        in >> type;
         if (strcasecmp(type.c_str(), "f") == 0) {
 			try {
 				// face = triangle

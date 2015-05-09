@@ -14,10 +14,7 @@ class Scene {
     std::list<Spear> spears;
     std::vector<Line> walls;
 public:
-    // common methods
-    // server methods
-    void loadStage(const std::string &fname); // load walls and spawn points
-    void setPlayerInput(int idx, bool up, bool down, bool left, bool right, double rotation);
+    void loadWalls(const std::string &fname);
     void update();
     vector addPlayer(); // returns spawn point
 };

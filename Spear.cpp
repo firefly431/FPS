@@ -3,9 +3,9 @@
 #include "Line.h"
 #include "Player.h"
 
-const double Spear::SPEAR_SPEED = 10;
+const double Spear::SPEAR_SPEED = 4;
 
-Spear::Spear(vector head, double direction) : head(head), velocity(direction) {
+Spear::Spear(vector head, double direction, Player *owner) : head(head), velocity(direction), owner(owner) {
     velocity *= SPEAR_SPEED;
 }
 
@@ -32,6 +32,7 @@ bool Spear::move(std::vector<Player> &players, const std::vector<Line> &walls) {
 #else
 	for (Player &p : players) {
 #endif
+        if (&p == owner) continue;
 		// process p
         if (p.getCollisionBounds().intersects(cb, &colpt)) {
             p.hit(*this);

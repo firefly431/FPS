@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vector.h"
+#include "Shape.h"
 
 #include <list>
 
@@ -16,14 +17,15 @@ public:
     };
 
     struct Node {
-        Node(vector position, double radius);
+        Node(vector position, Shape &&shape);
+        Node(Node &&move);
         vector position;
-        double radius;
+        std::unique_ptr<Shape> shape;
         std::list<Edge> edges;
         void addEdge(Node *to);
     };
 
-    Node *addNode(vector position, double radius);
+    Node *addNode(vector position, Shape &&shape);
 
     std::list<Node> nodes;
 };

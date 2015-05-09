@@ -35,7 +35,7 @@ AIController::AIController(Player &target, MapGraph &nodes)
 void AIController::update(Player &me) {
     NodeRef pos = find(me.position);
     NodeRef nt = find(target.position);
-    if (nt != path.back()) {
+    if (nt && nt != path.back()) {
         // try to search backward a few nodes
         auto it = path.rbegin();
         auto eit = path.rend();
@@ -61,20 +61,7 @@ void AIController::update(Player &me) {
                 }
             }
         }
-        // maybe one of node's neighbors?
-        auto nn = path.back();
-#if _MSC_VER < 1800
-        auto ee = nn->edges.end();
-        for (auto it = nn->edges.begin(); it != ee; it++) {
-            auto &edge = *it;
-#else
-        for (const auto &edge : nn->edges) {
-#endif
-            if (edge.to == nt) {
-                path.push_back(nt);
-                goto follow_path;
-            }
-        }
+        // recalculate
         path.clear();
         calculate_path(pos, nt);
     }

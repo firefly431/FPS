@@ -3,6 +3,9 @@
 #include "Player.h"
 
 #include <limits>
+#include <utility>
+#include <algorithm>
+#include <vector>
 
 typedef MapGraph::Node *NodeRef;
 
@@ -105,6 +108,71 @@ void AIController::shoot(Player &me) {
 void AIController::face(Player &me, const vector &target) {
     me.heading = (target - me.position).angle();
 }
+
+// everything's public because no reason for encapsulation
+// it's a private interface
+struct PriorityQueue {
+    typedef std::pair<double, NodeRef> element;
+    std::vector<element> data;
+    PriorityQueue(int sz) : data(sz) {}
+    // convention: i = 1-based, I = 0-based
+    inline void swap(int i, int j) {
+        std::iter_swap(data.begin() + (i - 1), data.begin() + (j - 1));
+    }
+    inline void swapUp(int i) {
+        swap(i, i / 2);
+    }
+    inline double get(int i) {
+        return data[i - 1].first;
+    }
+    // STILL 1-based
+    inline NodeRef operator[](int i) {
+        return data[i - 1].second;
+    }
+    void bubble(int i) {
+        while (i > 1 && get(i) < get(i / 2)) {
+            swapUp(i);
+            i /= 2;
+        }
+    }
+    void heapify(int i) {
+        int sz = data.size();
+        int sz2 = sz / 2;
+        while (i <= sz2) {
+            int minc = (i * 2 == sz ? i * 2 :
+                        get(i * 2) < get(i * 2 + 1) ?
+                        i * 2 : i * 2 + 1);
+            if (get(minc) < get(i)) {
+                swap(i, minc);
+                i = minc;
+            }
+        }
+    }
+    void insert(NodeRef el, double p) {
+#if _MSC_VER < 1800
+        data.push_back(std::make_pair(p, el));
+#else
+        data.emplace_back(p, el);
+#endif
+        bubble(data.size());
+    }
+    void remove() {
+        swap(1, data.size());
+        data.pop_back();
+        heapify(1);
+    }
+    void decrease(int i, double p) {
+        data[i - 1].first = p;
+        bubble(i);
+    }
+    // 1 based, returns 0 on not found
+    int search(NodeRef target) {
+        for (int i = data.size(); i >= 1; --i) {
+            if ((*this)[i] == target) return i;
+        }
+        return 0;
+    }
+};
 
 void AIController::calculate_path(NodeRef pos, NodeRef target) {
     //

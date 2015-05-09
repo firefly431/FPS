@@ -74,11 +74,9 @@ void Scene::loadGraph(const std::string &fname) {
                 // explicit conversion (WHY NOT)
                 node = graph.addNode((A + B + C + *D) / 4.,
                                      new Quad(A, B, C, *D));
-                std::cout << "Added quad" << std::endl;
             } else {
                 node = graph.addNode((A + B + C) / 3.,
                                      new Triangle(A, B, C));
-                std::cout << "Added tri" << std::endl;
             }
             // kind of slow
             // if another poly shares two points, and

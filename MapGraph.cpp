@@ -10,6 +10,7 @@ void MapGraph::Node::addEdge(Node *to) {
     Edge e;
     e.to = to;
     e.weight = to->position - position;
+    edges.push_back(e);
 }
 
 MapGraph::Node *MapGraph::addNode(vector position, Shape *shape) {

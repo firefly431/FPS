@@ -8,17 +8,23 @@
 #include "Line.h"
 #include "Spear.h"
 
-void TopDownRenderer::drawLine(const Line &l) {
+void TopDownRenderer::drawLine(const Line &l, const sf::Color &c) {
     shapes.wall[0].position.x = l.p1.x;
     shapes.wall[0].position.y = l.p1.y;
     shapes.wall[1].position.x = l.p2.x;
     shapes.wall[1].position.y = l.p2.y;
+    shapes.wall[0].color = shapes.wall[1].color = c;
     window.draw(shapes.wall, 2, sf::Lines);
 }
 
 void TopDownRenderer::drawPlayer(const Player &p) {
 	shapes.player.setPosition(p.position.x, p.position.y);
 	window.draw(shapes.player);
+}
+
+void TopDownRenderer::drawPoint(const vector &v) {
+    shapes.point.setPosition(v.x, v.y);
+    window.draw(shapes.point);
 }
 
 TopDownRenderer::TopDownRenderer(int width, int height)
@@ -28,6 +34,9 @@ TopDownRenderer::TopDownRenderer(int width, int height)
 	shapes.player = sf::CircleShape(Player::COLLISION_RADIUS);
 	shapes.player.setFillColor(sf::Color::Yellow);
     shapes.player.setOrigin(Player::COLLISION_RADIUS, Player::COLLISION_RADIUS);
+    shapes.point = sf::CircleShape(0.1);
+    shapes.point.setFillColor(sf::Color::White);
+    shapes.point.setOrigin(0.1, 0.1);
 	shapes.wall[0] = sf::Vertex(sf::Vector2f(), sf::Color::Green);
 	shapes.wall[1] = sf::Vertex(sf::Vector2f(), sf::Color::Green);
 	// test players
@@ -41,7 +50,7 @@ TopDownRenderer::TopDownRenderer(int width, int height)
     view.setCenter(sf::Vector2f(0, 0));
     window.setView(view);
     scene.loadWalls("walls.obj");
-    //scene.loadGraph("faces.obj");
+    scene.loadGraph("faces.obj");
 }
 
 void TopDownRenderer::mainloop() {
@@ -95,6 +104,13 @@ void TopDownRenderer::mainloop() {
             } else
                 it++;
 		}
+        for (const auto &nn : scene.graph.nodes) {
+            drawPoint(nn.position);
+            for (const auto &ne : nn.edges) {
+                drawLine(Line(nn.position,
+                              ne.to->position), sf::Color::White);
+            }
+        }
 		window.display();
 	}
 }

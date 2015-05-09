@@ -17,7 +17,7 @@ public:
     };
 
     struct Node {
-        Node(vector position, Shape &&shape);
+        Node(vector position, Shape *shape);
         Node(Node &&move);
         vector position;
         std::unique_ptr<Shape> shape;
@@ -25,7 +25,8 @@ public:
         void addEdge(Node *to);
     };
 
-    Node *addNode(vector position, Shape &&shape);
+    // will take ownership
+    Node *addNode(vector position, Shape *shape);
 
     std::list<Node> nodes;
 };

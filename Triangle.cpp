@@ -11,3 +11,7 @@ bool Triangle::contains(const vector &p) const {
                  u = 1 - v - w;
     return v >= 0 && v <= 1 && w >= 0 && w <= 1 && u >= 0 && u <= 1;
 }
+
+bool Triangle::hasPoint(const vector &p) const {
+    return a == p || b == p || c == p;
+}

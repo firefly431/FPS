@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Spear.h"
 #include "Line.h"
+#include "MapGraph.h"
 
 // the model class
 class Scene {
@@ -13,8 +14,10 @@ class Scene {
     std::vector<Player> players;
     std::list<Spear> spears;
     std::vector<Line> walls;
+    MapGraph graph;
 public:
     void loadWalls(const std::string &fname);
+    void loadGraph(const std::string &fname);
     void update();
     vector addPlayer(); // returns spawn point
 };

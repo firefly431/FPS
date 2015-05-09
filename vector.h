@@ -11,7 +11,7 @@ struct vector {
     double x, y;
     inline vector() : x(0), y(0) {}
     inline vector(const double x, const double y) : x(x), y(y) {}
-    inline vector(const double angle) : x(std::cos(angle)), y(std::sin(angle)) {}
+    inline explicit vector(const double angle) : x(std::cos(angle)), y(std::sin(angle)) {}
     inline vector(const vector &other): x(other.x), y(other.y) {}
 
     inline vector &operator=(const vector &other) {

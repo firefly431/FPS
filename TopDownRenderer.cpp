@@ -41,6 +41,7 @@ TopDownRenderer::TopDownRenderer(int width, int height)
     view.setCenter(sf::Vector2f(0, 0));
     window.setView(view);
     scene.loadWalls("walls.obj");
+    //scene.loadGraph("faces.obj");
 }
 
 void TopDownRenderer::mainloop() {

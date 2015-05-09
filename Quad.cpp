@@ -6,3 +6,7 @@ bool Quad::contains(const vector &p) const {
     return a.contains(p) || b.contains(p);
 }
 
+bool Quad::hasPoint(const vector &p) const {
+    return a.hasPoint(p) || b.hasPoint(p);
+}
+

@@ -58,26 +58,26 @@ void OBJFile::load(std::istream &in1) {
     while (in1.good()) {
         std::getline(in1, line);
         std::istringstream in(line);
-		if (line == "") continue;
+        if (line == "") continue;
         in >> type;
         if (strcasecmp(type.c_str(), "f") == 0) {
-			try {
-				// face = triangle
-				GLuint a, b, c;
-				faces.push_back(a = read_vertex(in));
-				faces.push_back(b = read_vertex(in));
-				faces.push_back(c = read_vertex(in));
-				in >> std::ws; // skip ws
-				if (isdigit(in.peek())) {
-					GLuint d = read_vertex(in);
-					// triangulate
-					faces.push_back(c);
-					faces.push_back(d);
-					faces.push_back(a);
-				}
-			} catch (const FileFormatException &f) {
-				std::cout << line << std::endl;
-			}
+            try {
+                // face = triangle
+                GLuint a, b, c;
+                faces.push_back(a = read_vertex(in));
+                faces.push_back(b = read_vertex(in));
+                faces.push_back(c = read_vertex(in));
+                in >> std::ws; // skip ws
+                if (isdigit(in.peek())) {
+                    GLuint d = read_vertex(in);
+                    // triangulate
+                    faces.push_back(c);
+                    faces.push_back(d);
+                    faces.push_back(a);
+                }
+            } catch (const FileFormatException &f) {
+                std::cout << line << std::endl;
+            }
         } else if (strcasecmp(type.c_str(), "v") == 0) {
             in >> f; filev.push_back(f);
             in >> f; filev.push_back(f);

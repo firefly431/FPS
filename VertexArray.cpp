@@ -9,8 +9,8 @@ VertexArray::VertexArray(VertexArray &&move) : id(move.id), indices(std::move(mo
     move.size = 0;
     move.mode = 0;
     move.index_type = 0;
-	for (int i = 0; i < ATTRIBUTE_NUM; i++)
-		buffers[i] = std::move(move.buffers[i]);
+    for (int i = 0; i < ATTRIBUTE_NUM; i++)
+        buffers[i] = std::move(move.buffers[i]);
 }
 
 VertexArray::~VertexArray() {
@@ -23,7 +23,7 @@ VertexArray &VertexArray::operator=(VertexArray &&move) {
         id = move.id;
         move.id = 0;
         for (int i = 0; i < ATTRIBUTE_NUM; i++)
-			buffers[i] = std::move(move.buffers[i]);
+            buffers[i] = std::move(move.buffers[i]);
         indices = std::move(move.indices);
         size = move.size;
         move.size = 0;

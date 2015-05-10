@@ -42,7 +42,7 @@ void Scene::loadGraph(const std::string &fname) {
         in >> type;
         if (strcasecmp(type.c_str(), "v") == 0) {
             in >> x; in >> y; // ignore z
-#if _MSC_VER < 1800
+#if defined(_MSC_VER) && _MSC_VER < 1800
             vertices.push_back(vector(x, y));
 #else
             vertices.emplace_back(x, y);
@@ -92,7 +92,7 @@ void Scene::loadGraph(const std::string &fname) {
             // if another poly shares two points, and
             // the player is able to pass through the
             // line, add an edge
-#if _MSC_VER < 1800
+#if defined(_MSC_VER) && _MSC_VER < 1800
             auto c_it = graph.nodes.end();
             for (auto it = graph.nodes.begin(); it != c_it; it++) {
                 auto &n = *it;
@@ -192,7 +192,7 @@ void Scene::loadGraph(const std::string &fname) {
 }
 
 bool Scene::wouldCollide(const vector &v) {
-#if _MSC_VER < 1800
+#if defined(_MSC_VER) && _MSC_VER < 1800
     auto p_it = players.end();
     for (auto it = players.begin(); it != p_it; it++) {
         auto &p = *it;
@@ -209,7 +209,7 @@ bool Scene::wouldCollide(const vector &v) {
 
 vector Scene::addPlayer() {
     vector ret;
-#if _MSC_VER < 1800
+#if defined(_MSC_VER) && _MSC_VER < 1800
     auto c_it = graph.nodes.end();
     for (auto it = graph.nodes.begin(); it != c_it; it++) {
         auto &n = *it;
@@ -224,7 +224,7 @@ vector Scene::addPlayer() {
             break;
         }
     }
-#if _MSC_VER < 1800
+#if defined(_MSC_VER) && _MSC_VER < 1800
     players.push_back(Player(ret, 0));
 #else
     players.emplace_back(ret, 0);

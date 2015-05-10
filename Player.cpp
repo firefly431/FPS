@@ -51,15 +51,15 @@ double Player::getRotation() const {
 void Player::move(const std::vector<Line> &walls, std::list<Spear> &spears) {
     if (controller)
         controller->update(*this);
-	if (input.up) moveForward();
-	if (input.down) moveBack();
-	if (input.left) moveLeft();
-	if (input.right) moveRight();
-	Circle circ(getCollisionBounds());
+    if (input.up) moveForward();
+    if (input.down) moveBack();
+    if (input.left) moveLeft();
+    if (input.right) moveRight();
+    Circle circ(getCollisionBounds());
     if (input.fire) {
         if (fire_rate <= 0) {
             fire_rate = FIRE_RATE;
-#if _MSC_VER < 1800
+#if defined(_MSC_VER) && _MSC_VER < 1800
             spears.push_back(Spear(position, heading, this));
 #else
             spears.emplace_back(position, heading, this);
@@ -70,30 +70,30 @@ void Player::move(const std::vector<Line> &walls, std::list<Spear> &spears) {
     }
     else
         if (--fire_rate < 0) fire_rate = -1;
-	int colcount = 0;
-	if (false) {
+    int colcount = 0;
+    if (false) {
 redo_collision:
-		if (++colcount > 20) {
-			std::cerr << "Over 20 collisions; aborting" << std::endl;
-			return;
-		}
-		circ = getCollisionBounds();
-	}
-#ifdef _MSC_VER
-	for each (const auto &wall in walls) {
+        if (++colcount > 20) {
+            std::cerr << "Over 20 collisions; aborting" << std::endl;
+            return;
+        }
+        circ = getCollisionBounds();
+    }
+#if defined(_MSC_VER) && _MSC_VER < 1800
+    for each (const auto &wall in walls) {
 #else
-	for (const auto &wall : walls) {
+    for (const auto &wall : walls) {
 #endif
-		vector off;
-		if (circ.intersects(wall, &off)) {
-			position += off;
-			goto redo_collision;
-		}
-	}
+        vector off;
+        if (circ.intersects(wall, &off)) {
+            position += off;
+            goto redo_collision;
+        }
+    }
 }
 
 Circle Player::getCollisionBounds() const {
-	return Circle(position, COLLISION_RADIUS);
+    return Circle(position, COLLISION_RADIUS);
 }
 
 void Player::hit(const Spear &spear) {

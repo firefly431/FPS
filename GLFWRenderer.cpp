@@ -140,8 +140,8 @@ void GLFWRenderer::mainloop() {
 }
 
 void GLFWRenderer::draw() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	// draw the meshes
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // draw the meshes
     camera->updateView(*player, Player::EYE_LEVEL);
     //camera->updateView(0, 0, 80, 0, 0, -1, 1, 0, 0);
     f_mesh->activate();

@@ -245,6 +245,7 @@ void GLFWRenderer::generateSceneMesh() {
             texcoords.push_back(0);
             texcoords.push_back(u);
             texcoords.push_back(0);
+            u = nu;
         }
     }
     VertexArray &va = *new VertexArray(vertices.size() / 3, GL_TRIANGLES);

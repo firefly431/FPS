@@ -1,7 +1,6 @@
 #include <iostream>
 #include <stdexcept>
 
-//#include "TopDownRenderer.h"
 #include "GLFWRenderer.h"
 
 int main() {

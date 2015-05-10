@@ -10,7 +10,6 @@
 class Player;
 
 class AIController : public PlayerController {
-    friend class TopDownRenderer;
 public:
     AIController(Player &target, MapGraph &nodes, std::vector<Line> &walls);
     static const double DISTANCE;

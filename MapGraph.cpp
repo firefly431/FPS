@@ -9,7 +9,7 @@ MapGraph::Node::Node(Node &&move) : position(std::move(move.position)), shape(st
 void MapGraph::Node::addEdge(Node *to) {
     Edge e;
     e.to = to;
-    e.weight = to->position - position;
+    e.weight = (double)(to->position - position);
     edges.push_back(e);
 }
 

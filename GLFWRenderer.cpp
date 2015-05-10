@@ -10,6 +10,9 @@
 #include "AIController.h"
 
 static const double RADS_PER_PX = -0.01;
+const double GLFWRenderer::WALL_HEIGHT = 3.15;
+const double GLFWRenderer::UV_HEIGHT = 0.38;
+const double GLFWRenderer::FLOOR_SCALE = 0.1;
 
 static void error_callback(int error, const char *description) {
     std::cerr << "GLFW error!" << std::endl;
@@ -100,22 +103,6 @@ GLFWRenderer::GLFWRenderer(unsigned int width, unsigned int height) {
         OBJFile("spear.obj").result(),
         Texture("spear.jpg")
     ));
-    s_mesh = std::unique_ptr<Mesh>(new Mesh(
-        ShaderProgram(
-            VertexShader("static.vert", 0),
-            FragmentShader("basic.frag", 0)
-        ),
-        OBJFile("scene.obj").result(),
-        Texture("stone.jpg")
-    ));
-    f_mesh = std::unique_ptr<Mesh>(new Mesh(
-        ShaderProgram(
-            VertexShader("static.vert", 0),
-            FragmentShader("basic.frag", 0)
-        ),
-        OBJFile("floor.obj").result(),
-        Texture("floor.jpg")
-    ));
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glfwSwapInterval(1);
@@ -127,8 +114,8 @@ GLFWRenderer::GLFWRenderer(unsigned int width, unsigned int height) {
     std::cout << "OpenGL version: ";
     std::cout << glGetString(GL_VERSION) << std::endl;
     std::cout << "GLFW version: " << glfwGetVersionString() << std::endl;
-    scene.loadWalls("walls.obj");
     scene.loadGraph("faces.obj");
+    generateSceneMesh();
     scene.addPlayer();
     scene.addPlayer();
     player = &scene.players[0];
@@ -156,6 +143,7 @@ void GLFWRenderer::draw() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// draw the meshes
     camera->updateView(*player, Player::EYE_LEVEL);
+    //camera->updateView(0, 0, 80, 0, 0, -1, 1, 0, 0);
     f_mesh->activate();
     f_mesh->updateVP(*camera);
     f_mesh->draw();
@@ -192,3 +180,140 @@ GLFWRenderer::~GLFWRenderer() {
     }
 }
 
+void GLFWRenderer::generateSceneMesh() {
+    std::cout << scene.islands.size() << " island(s)" << std::endl;
+    std::vector<GLfloat> vertices, normals, texcoords;
+    double minx = std::numeric_limits<double>::infinity(),
+           maxx = -std::numeric_limits<double>::infinity(),
+           miny = minx, maxy = maxx;
+#if defined(_MSC_VER) && _MSC_VER < 1800
+    auto i_it = scene.islands.end();
+    for (auto itt = scene.islands.begin(); itt != i_it; itt++) {
+        auto &island = *itt;
+#if 0
+    }
+#endif
+#else
+    for (auto &island : scene.islands) {
+#endif
+        double u = 0;
+        auto e_it = island.end();
+        auto it = island.begin();
+        auto prev = *(it++);
+        for (vector pt; it != e_it; prev = *(it++)) {
+            pt = *it;
+            if (pt.x < minx) minx = pt.x;
+            if (pt.x > maxx) maxx = pt.x;
+            if (pt.y < miny) miny = pt.y;
+            if (pt.y > maxy) maxy = pt.y;
+            vertices.push_back(prev.x);
+            vertices.push_back(prev.y);
+            vertices.push_back(0);
+            vertices.push_back(prev.x);
+            vertices.push_back(prev.y);
+            vertices.push_back(WALL_HEIGHT);
+            vertices.push_back(pt.x);
+            vertices.push_back(pt.y);
+            vertices.push_back(WALL_HEIGHT);
+            vertices.push_back(pt.x);
+            vertices.push_back(pt.y);
+            vertices.push_back(WALL_HEIGHT);
+            vertices.push_back(pt.x);
+            vertices.push_back(pt.y);
+            vertices.push_back(0);
+            vertices.push_back(prev.x);
+            vertices.push_back(prev.y);
+            vertices.push_back(0);
+            vector lv = (pt - prev);
+            vector lvn = lv.normalized();
+            double ll = (double)lv;
+            for (int _ = 0; _ < 6; _++) {
+                normals.push_back(-lvn.y);
+                normals.push_back(lvn.x);
+                normals.push_back(0);
+            }
+            double nu = u + (UV_HEIGHT / WALL_HEIGHT) * ll;
+            texcoords.push_back(u);
+            texcoords.push_back(0);
+            texcoords.push_back(u);
+            texcoords.push_back(UV_HEIGHT);
+            texcoords.push_back(nu);
+            texcoords.push_back(UV_HEIGHT);
+            texcoords.push_back(nu);
+            texcoords.push_back(UV_HEIGHT);
+            texcoords.push_back(nu);
+            texcoords.push_back(0);
+            texcoords.push_back(u);
+            texcoords.push_back(0);
+            u = nu;
+        }
+    }
+    VertexArray &va = *new VertexArray(vertices.size() / 3, GL_TRIANGLES);
+    va.activate();
+    va.bindBuffer(
+        VertexBuffer(sizeof(GLfloat) * vertices.size(), GL_STATIC_DRAW,
+                     &vertices[0]), ATTRIBUTE_POSITION, 3, GL_FLOAT, 0);
+    va.bindBuffer(
+        VertexBuffer(sizeof(GLfloat) * texcoords.size(), GL_STATIC_DRAW,
+                     &texcoords[0]), ATTRIBUTE_TEXCOORD, 2, GL_FLOAT, 0);
+    va.bindBuffer(
+        VertexBuffer(sizeof(GLfloat) * normals.size(), GL_STATIC_DRAW,
+                     &normals[0]), ATTRIBUTE_NORMAL, 3, GL_FLOAT, 0);
+    va.deactivate();
+    s_mesh.reset(new Mesh(
+        ShaderProgram(
+            VertexShader("static.vert", 0),
+            FragmentShader("basic.frag", 0)
+        ),
+        std::move(va),
+        Texture("stone.jpg")
+    ));
+    // floor
+    vertices.clear();
+    normals.clear();
+    texcoords.clear();
+    vertices.push_back(minx);
+    vertices.push_back(miny);
+    vertices.push_back(0);
+    vertices.push_back(maxx);
+    vertices.push_back(miny);
+    vertices.push_back(0);
+    vertices.push_back(maxx);
+    vertices.push_back(maxy);
+    vertices.push_back(0);
+    vertices.push_back(minx);
+    vertices.push_back(maxy);
+    vertices.push_back(0);
+    normals.push_back(0); normals.push_back(0); normals.push_back(1);
+    normals.push_back(0); normals.push_back(0); normals.push_back(1);
+    normals.push_back(0); normals.push_back(0); normals.push_back(1);
+    normals.push_back(0); normals.push_back(0); normals.push_back(1);
+    texcoords.push_back(minx * FLOOR_SCALE);
+    texcoords.push_back(miny * FLOOR_SCALE);
+    texcoords.push_back(maxx * FLOOR_SCALE);
+    texcoords.push_back(miny * FLOOR_SCALE);
+    texcoords.push_back(maxx * FLOOR_SCALE);
+    texcoords.push_back(maxy * FLOOR_SCALE);
+    texcoords.push_back(minx * FLOOR_SCALE);
+    texcoords.push_back(maxy * FLOOR_SCALE);
+    VertexArray &fva = *new VertexArray(4, GL_TRIANGLE_FAN);
+    fva.activate();
+    fva.bindBuffer(
+        VertexBuffer(sizeof(GLfloat) * vertices.size(), GL_STATIC_DRAW,
+                     &vertices[0]), ATTRIBUTE_POSITION, 3, GL_FLOAT, 0);
+    fva.bindBuffer(
+        VertexBuffer(sizeof(GLfloat) * texcoords.size(), GL_STATIC_DRAW,
+                     &texcoords[0]), ATTRIBUTE_TEXCOORD, 2, GL_FLOAT, 0);
+    fva.bindBuffer(
+        VertexBuffer(sizeof(GLfloat) * normals.size(), GL_STATIC_DRAW,
+                     &normals[0]), ATTRIBUTE_NORMAL, 3, GL_FLOAT, 0);
+    fva.deactivate();
+    f_mesh.reset(new Mesh(
+        ShaderProgram(
+            VertexShader("static.vert", 0),
+            FragmentShader("basic.frag", 0)
+        ),
+        std::move(fva),
+        Texture("floor.jpg")
+    ));
+}

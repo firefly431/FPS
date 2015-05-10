@@ -16,7 +16,7 @@ bool Circle::intersects(const Circle &other, vector *norm) {
 
 bool Circle::intersects(const Line &other, vector *norm) {
 	auto nlv = other.vec();
-	double llen = nlv;
+	double llen = (double)nlv;
 	nlv /= llen;
 	double t = nlv.dot(position - other.p1);
 	if (t < 0) t = 0;

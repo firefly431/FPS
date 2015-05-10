@@ -15,7 +15,8 @@ public:
     std::list<Spear> spears;
     std::vector<Line> walls;
     MapGraph graph;
-    void loadWalls(const std::string &fname);
+    // such as A-B-C-D-A
+    std::list<std::list<vector>> islands;
     void loadGraph(const std::string &fname);
     void update();
     vector addPlayer(); // returns spawn point

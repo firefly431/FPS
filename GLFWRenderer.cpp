@@ -226,7 +226,7 @@ void GLFWRenderer::generateSceneMesh() {
             vertices.push_back(0);
             vector lv = (pt - prev);
             vector lvn = lv.normalized();
-            double ll = lv;
+            double ll = (double)lv;
             for (int _ = 0; _ < 6; _++) {
                 normals.push_back(-lvn.y);
                 normals.push_back(lvn.x);

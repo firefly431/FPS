@@ -54,7 +54,7 @@ TopDownRenderer::TopDownRenderer(int width, int height)
     scene.players[1].movement_speed = 0.9;
     scene.players[1].setController(new AIController(scene.players[0], scene.graph, scene.walls));
     sf::View view;
-    view.setSize(sf::Vector2f(28.8 * width/height, 28.8));
+    view.setSize(sf::Vector2f(64 * width/height, 64));
     view.setCenter(sf::Vector2f(0, 0));
     window.setView(view);
 }
@@ -93,7 +93,6 @@ void TopDownRenderer::mainloop() {
         for (const auto &nn : scene.graph.nodes) {
 #endif
             //drawPoint(nn.position);
-            /*
             Triangle *tri = dynamic_cast<Triangle *>(nn.shape.get());
             if (tri == nullptr) {
                 Quad *quad = (Quad *)nn.shape.get();
@@ -102,7 +101,6 @@ void TopDownRenderer::mainloop() {
             } else {
                 drawTri(*tri, sf::Color::Blue);
             }
-            */
             for (const auto &ne : nn.edges) {
                 drawLine(Line(nn.position,
                               ne.to->position), sf::Color::White);

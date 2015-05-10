@@ -20,6 +20,10 @@ struct vector {
         return *this;
     }
 
+    inline bool operator==(const vector &other) const {
+        return x == other.x && y == other.y;
+    }
+
     inline vector operator+(const vector &other) const {
         return vector(other.x + x, other.y + y);
     }
@@ -81,7 +85,11 @@ struct vector {
         return *this;
     }
 
-    inline operator double(void) const {
+    inline 
+#if !defined(_MSC_VER) || _MSC_VER > 1800
+        explicit
+#endif
+        operator double(void) const {
         return std::sqrt(x * x + y * y);
     }
 
@@ -102,7 +110,7 @@ struct vector {
     }
 
     inline double dist(const vector &other) const {
-        return (*this - other);
+        return (double)(*this - other);
     }
 
     inline double dot(const vector &other) const {

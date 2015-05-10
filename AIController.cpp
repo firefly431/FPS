@@ -30,7 +30,7 @@ NodeRef AIController::find(vector &target) {
 #else
     for (auto &node : nodes.nodes) {
 #endif
-        double dist = node.position - target;
+        double dist = (double)(node.position - target);
         if (dist < mindist && node.shape->contains(target)) {
             ret = &node;
             mindist = dist;

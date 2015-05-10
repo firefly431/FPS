@@ -26,6 +26,7 @@ public:
 
     vector position;
     double heading;
+    double movement_speed; // scale
     int fire_rate;
 
     struct {
@@ -39,6 +40,7 @@ public:
     static const double MOVEMENT_SPEED, SIDE_SPEED, BACK_SPEED;
     static const double ZERO_ANGLE;
     static const double COLLISION_RADIUS;
+    static const double EYE_LEVEL;
     static const int FIRE_RATE;
     double getRotation() const;
     void rotate(double amount);

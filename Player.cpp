@@ -10,12 +10,13 @@ const double Player::SIDE_SPEED = 0.1;
 const double Player::BACK_SPEED = 0.1;
 const double Player::ZERO_ANGLE = M_PI;
 const double Player::COLLISION_RADIUS = 1;
+const double Player::EYE_LEVEL = 1;
 const int Player::FIRE_RATE = 30;
 
-Player::Player() : position(0, 0), heading(0), fire_rate(0), input(), controller() {
+Player::Player() : position(0, 0), heading(0), movement_speed(1.0), fire_rate(0), input(), controller() {
     input.up = input.down = input.left = input.right = input.fire = false;
 }
-Player::Player(const vector pos, const double h) : position(pos), heading(h), fire_rate(0), input(), controller() {
+Player::Player(const vector pos, const double h) : position(pos), heading(h), movement_speed(1.0), fire_rate(0), input(), controller() {
     input.up = input.down = input.left = input.right = input.fire = false;
 }
 
@@ -28,19 +29,19 @@ void Player::rotate(double amount) {
 }
 
 void Player::moveForward() {
-    position += vector(heading) * Player::MOVEMENT_SPEED;
+    position += vector(heading) * Player::MOVEMENT_SPEED * movement_speed;
 }
 
 void Player::moveLeft() {
-    position += vector(heading + M_PI / 2) * Player::SIDE_SPEED;
+    position += vector(heading + M_PI / 2) * Player::SIDE_SPEED * movement_speed;
 }
 
 void Player::moveRight() {
-    position += vector(heading - M_PI / 2) * Player::SIDE_SPEED;
+    position += vector(heading - M_PI / 2) * Player::SIDE_SPEED * movement_speed;
 }
 
 void Player::moveBack() {
-    position += vector(heading) * -Player::BACK_SPEED;
+    position += vector(heading) * -Player::BACK_SPEED * movement_speed;
 }
 
 double Player::getRotation() const {

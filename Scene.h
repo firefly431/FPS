@@ -10,12 +10,11 @@
 
 // the model class
 class Scene {
-    friend class TopDownRenderer;
+public:
     std::vector<Player> players;
     std::list<Spear> spears;
     std::vector<Line> walls;
     MapGraph graph;
-public:
     void loadWalls(const std::string &fname);
     void loadGraph(const std::string &fname);
     void update();

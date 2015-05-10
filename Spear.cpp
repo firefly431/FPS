@@ -3,7 +3,7 @@
 #include "Line.h"
 #include "Player.h"
 
-const double Spear::SPEAR_SPEED = 4;
+const double Spear::SPEAR_SPEED = 2;
 
 Spear::Spear(vector head, double direction, Player *owner) : head(head), velocity(direction), owner(owner) {
     velocity *= SPEAR_SPEED;

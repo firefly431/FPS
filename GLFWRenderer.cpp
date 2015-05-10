@@ -7,6 +7,7 @@
 #include "OBJFile.h"
 
 #include "Spear.h"
+#include "AIController.h"
 
 static const double RADS_PER_PX = -0.01;
 
@@ -28,18 +29,24 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         glfwSetWindowShouldClose(window, GL_TRUE);
         break;
     case GLFW_KEY_W:
-        renderer->players[renderer->current_player].input.up = action != GLFW_RELEASE;
+        renderer->player->input.up = action != GLFW_RELEASE;
         break;
     case GLFW_KEY_S:
-        renderer->players[renderer->current_player].input.down = action != GLFW_RELEASE;
+        renderer->player->input.down = action != GLFW_RELEASE;
         break;
     case GLFW_KEY_A:
-        renderer->players[renderer->current_player].input.left = action != GLFW_RELEASE;
+        renderer->player->input.left = action != GLFW_RELEASE;
         break;
     case GLFW_KEY_D:
-        renderer->players[renderer->current_player].input.right = action != GLFW_RELEASE;
+        renderer->player->input.right = action != GLFW_RELEASE;
         break;
     }
+}
+
+void mouse_callback(GLFWwindow *window, int button, int action, int mods) {
+    GLFWRenderer *renderer = (GLFWRenderer *)glfwGetWindowUserPointer(window);
+    if (button == GLFW_MOUSE_BUTTON_LEFT)
+        renderer->player->input.fire = action != GLFW_RELEASE;
 }
 
 void cursor_callback(GLFWwindow *window, double xpos, double ypos) {
@@ -50,10 +57,10 @@ void cursor_callback(GLFWwindow *window, double xpos, double ypos) {
         glfwSetCursorPos(window, xpos, ypos);
     }
     GLFWRenderer *renderer = (GLFWRenderer *)glfwGetWindowUserPointer(window);
-    renderer->players[renderer->current_player].heading = fmod(xpos * RADS_PER_PX, 2 * M_PI);
+    renderer->player->heading = fmod(xpos * RADS_PER_PX, 2 * M_PI);
 }
 
-GLFWRenderer::GLFWRenderer(unsigned int width, unsigned int height) : players(), current_player(0) {
+GLFWRenderer::GLFWRenderer(unsigned int width, unsigned int height) {
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         throw std::runtime_error("Failed to init GLFW");
@@ -71,6 +78,7 @@ GLFWRenderer::GLFWRenderer(unsigned int width, unsigned int height) : players(),
     }
     glfwSetKeyCallback(window, key_callback);
     glfwSetCursorPosCallback(window, cursor_callback);
+    glfwSetMouseButtonCallback(window, mouse_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     // let callbacks access us
     glfwSetWindowUserPointer(window, (void *)this);
@@ -78,36 +86,67 @@ GLFWRenderer::GLFWRenderer(unsigned int width, unsigned int height) : players(),
     camera = std::unique_ptr<Camera>(new Camera());
     p_mesh = std::unique_ptr<PlayerMesh>(new PlayerMesh(
         ShaderProgram(
-            VertexShader("player.vert", 0),
+            VertexShader("dynamic.vert", 0),
             FragmentShader("basic.frag", 0)
         ),
         OBJFile("teapotSmooth.obj").result(),
         Texture("default.png")
     ));
+    sp_mesh = std::unique_ptr<SpearMesh>(new SpearMesh(
+        ShaderProgram(
+            VertexShader("dynamic.vert", 0),
+            FragmentShader("basic.frag", 0)
+        ),
+        OBJFile("spear.obj").result(),
+        Texture("spear.jpg")
+    ));
+    s_mesh = std::unique_ptr<Mesh>(new Mesh(
+        ShaderProgram(
+            VertexShader("static.vert", 0),
+            FragmentShader("basic.frag", 0)
+        ),
+        OBJFile("scene.obj").result(),
+        Texture("stone.jpg")
+    ));
+    f_mesh = std::unique_ptr<Mesh>(new Mesh(
+        ShaderProgram(
+            VertexShader("static.vert", 0),
+            FragmentShader("basic.frag", 0)
+        ),
+        OBJFile("floor.obj").result(),
+        Texture("floor.jpg")
+    ));
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glfwSwapInterval(1);
     glfwGetFramebufferSize(window, (int *)&width, (int *)&height);
-    camera->updateView(0, 0, 0, 1, 0, 0, 0, 0, 1);
+    camera->updateView(0, 0, 0, 1, 0, 0, 0, 0, Player::EYE_LEVEL);
     resize(width, height);
     glfwSetWindowSizeCallback(window, resize_callback);
     // print context version
     std::cout << "OpenGL version: ";
     std::cout << glGetString(GL_VERSION) << std::endl;
     std::cout << "GLFW version: " << glfwGetVersionString() << std::endl;
-    // add some players
-    players.push_back(Player(vector(), 0));
-    players.push_back(Player(vector(8, 0), M_PI / 2));
-    players.push_back(Player(vector(-8, 0), -M_PI / 2));
-    players.push_back(Player(vector(0, 8), M_PI));
-    players.push_back(Player(vector(0, -8), 0));
+    scene.loadWalls("walls.obj");
+    scene.loadGraph("faces.obj");
+    scene.addPlayer();
+    scene.addPlayer();
+    player = &scene.players[0];
+    scene.players[1].setController(
+        new AIController(*player, scene.graph, scene.walls));
 }
 
 void GLFWRenderer::mainloop() {
-    std::vector<Line> walls;
-    std::list<Spear> spears;
     while (!glfwWindowShouldClose(window)) {
-        players[current_player].move(walls, spears);
+        auto end = scene.players.end();
+        for (auto it = scene.players.begin(); it != end; it++)
+            it->move(scene.walls, scene.spears);
+        auto send = scene.spears.end();
+        for (auto it = scene.spears.begin(); it != send;)
+            if (!it->move(scene.players, scene.walls))
+                scene.spears.erase(it++);
+            else
+                it++;
         draw();
         glfwPollEvents();
     }
@@ -116,16 +155,26 @@ void GLFWRenderer::mainloop() {
 void GLFWRenderer::draw() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// draw the meshes
-    camera->updateView(players[current_player], 1.0);
+    camera->updateView(*player, Player::EYE_LEVEL);
+    f_mesh->activate();
+    f_mesh->updateVP(*camera);
+    f_mesh->draw();
+    s_mesh->activate();
+    s_mesh->updateVP(*camera);
+    s_mesh->draw();
     p_mesh->activate();
     p_mesh->updateVP(*camera);
-    auto end = players.cend();
-    auto me = players.cbegin() + current_player;
-    for (auto it = players.cbegin(); it != end; ++it) {
-        if (me == it) continue;
-        auto &p = *it;
-        p_mesh->update(p);
+    auto end = scene.players.end();
+    for (auto it = scene.players.begin() + 1; it != end; ++it) {
+        p_mesh->update(*it);
         p_mesh->draw();
+    }
+    sp_mesh->activate();
+    sp_mesh->updateVP(*camera);
+    auto send = scene.spears.end();
+    for (auto it = scene.spears.begin(); it != send; ++it) {
+        sp_mesh->update(*it);
+        sp_mesh->draw();
     }
     Mesh::deactivate();
     glfwSwapBuffers(window);

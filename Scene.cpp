@@ -141,8 +141,10 @@ vector Scene::addPlayer() {
 #else
     for (auto &n : graph.nodes) {
 #endif
-        if (!wouldCollide(n.position))
+        if (!wouldCollide(n.position)) {
             ret = n.position;
+            break;
+        }
     }
 #if _MSC_VER < 1800
     players.push_back(Player(ret, 0));

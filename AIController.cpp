@@ -10,7 +10,13 @@
 #include <iostream>
 
 const double AIController::DISTANCE = 4.2;
+const double AIController::TARGET_DISTANCE = 8.2;
 const double AIController::BUFFER = 0.5;
+const double AIController::FOV = M_PI / 4;
+const double AIController::GROSS_ROTATION = 0.5;
+const double AIController::GROSS_THRESHOLD = 0.8;
+const double AIController::ROTATION_SPEED = 0.01;
+const int AIController::REACTION_TIME = 10;
 
 typedef MapGraph::Node *NodeRef;
 
@@ -33,10 +39,39 @@ NodeRef AIController::find(vector &target) {
     return ret;
 }
 
-AIController::AIController(Player &target, MapGraph &nodes)
-: target(target), nodes(nodes), path() {}
+AIController::AIController(Player &target, MapGraph &nodes, std::vector<Line> &walls)
+: target(target), nodes(nodes), walls(walls), path(), reaction_timer(REACTION_TIME) {}
 
 void AIController::update(Player &me) {
+    if ((me.position - target.position).sqr() <= TARGET_DISTANCE * TARGET_DISTANCE) {
+        Line of_sight(me.position, target.position);
+        bool can_see = true;
+#if defined(_MSC_VER) && _MSC_VER < 1800
+        auto e_it = walls.end();
+        for (auto it = walls.begin(); it != e_it; it++) {
+            auto &wall = *it;
+#if 0
+        }
+#endif
+#else
+        for (auto &wall : walls) {
+#endif
+            if (of_sight.intersects(wall, nullptr)) {
+                can_see = false;
+                break;
+            }
+        }
+        double adjust = std::abs((target.position - me.position).angle() - me.heading);
+        if (adjust > M_PI) adjust -= M_PI * 2;
+        if (can_see && std::abs(adjust) < FOV)
+            shootAt(me, target.position);
+        else {
+            me.input.up = me.input.down = me.input.left = me.input.right = me.input.fire = false;
+            me.rotate(GROSS_ROTATION);
+            reaction_timer = REACTION_TIME;
+        }
+        return;
+    }
     NodeRef pos = find(me.position);
     NodeRef nt = find(target.position);
     if (nt && nt != pos && (path.empty() || nt != path.back())) {
@@ -74,6 +109,7 @@ follow_path:
     if (!pos) {
         me.input.down = me.input.right = true;
         me.input.up = me.input.left = me.input.fire = false;
+        reaction_timer = REACTION_TIME;
         return;
     }
     // reminder: NodeRef pos = find(me.position);
@@ -82,11 +118,13 @@ follow_path:
             path.pop_front();
             if (path.empty()) {
                 shoot(me);
+                reaction_timer = REACTION_TIME;
                 return;
             }
         }
-        face(me, path.front()->position);
-        walk(me);
+        if (turnTowards(me, path.front()->position))
+            walk(me);
+        reaction_timer = REACTION_TIME;
         return;
     }
     shootAt(me, target.position);
@@ -98,13 +136,17 @@ void AIController::walk(Player &me) {
 }
 
 void AIController::shootAt(Player &me, const vector &target) {
-    face(me, target);
+    if (reaction_timer != 1) {
+        reaction_timer--;
+        return;
+    }
+    turnTowards(me, target);
     me.input.up = true;
     me.input.left = me.input.right = me.input.down = false;
-    double dist = target - me.position;
-    if (dist < DISTANCE)
+    double dist = (target - me.position).sqr();
+    if (dist < DISTANCE * DISTANCE)
         me.input.up = !(me.input.down = true);
-    else if (dist < DISTANCE + BUFFER)
+    else if (dist < (DISTANCE + BUFFER) * (DISTANCE + BUFFER))
         me.input.up = false;
     me.input.fire = !me.input.down;
 }
@@ -117,6 +159,20 @@ void AIController::shoot(Player &me) {
 
 void AIController::face(Player &me, const vector &target) {
     me.heading = (target - me.position).angle();
+}
+
+bool AIController::turnTowards(Player &me, const vector &target) {
+    double adjust = (target - me.position).angle() - me.heading;
+    if (adjust > M_PI) adjust -= M_PI * 2;
+    if (adjust < -M_PI) adjust += M_PI * 2;
+    if (std::abs(adjust) < GROSS_THRESHOLD) {
+        if (std::abs(adjust) < ROTATION_SPEED)
+            me.rotate(adjust);
+        else
+            me.rotate(adjust < 0 ? -ROTATION_SPEED : ROTATION_SPEED);
+    } else
+        me.rotate(adjust < 0 ? -GROSS_ROTATION : GROSS_ROTATION);
+    return std::abs(adjust) < ROTATION_SPEED;
 }
 
 // everything's public because no reason for encapsulation

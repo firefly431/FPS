@@ -6,13 +6,14 @@
 #include "OpenGL.h"
 
 #include "PlayerMesh.h"
+#include "SpearMesh.h"
 #include "Camera.h"
-
-// TODO: refactor scene variables out of renderer
+#include "Scene.h"
 
 class GLFWRenderer {
     friend void key_callback(GLFWwindow *, int, int, int, int);
     friend void cursor_callback(GLFWwindow *, double, double);
+    friend void mouse_callback(GLFWwindow *, int, int, int);
 public:
     GLFWRenderer(unsigned int width, unsigned int height);
     ~GLFWRenderer();
@@ -25,6 +26,9 @@ protected:
     GLFWwindow *window;
     std::unique_ptr<Camera> camera;
     std::unique_ptr<PlayerMesh> p_mesh;
-    std::vector<Player> players;
-    int current_player;
+    std::unique_ptr<SpearMesh> sp_mesh;
+    std::unique_ptr<Mesh> s_mesh;
+    std::unique_ptr<Mesh> f_mesh;
+    Scene scene;
+    Player *player;
 };

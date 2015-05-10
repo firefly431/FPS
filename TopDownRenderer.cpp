@@ -22,6 +22,7 @@ void TopDownRenderer::drawLine(const Line &l, const sf::Color &c) {
 void TopDownRenderer::drawPlayer(const Player &p) {
 	shapes.player.setPosition(p.position.x, p.position.y);
 	window.draw(shapes.player);
+    drawLine(Line(p.position, p.position + vector(p.heading) * Player::COLLISION_RADIUS), sf::Color::Red);
 }
 
 void TopDownRenderer::drawPoint(const vector &v) {
@@ -49,7 +50,8 @@ TopDownRenderer::TopDownRenderer(int width, int height)
 	shapes.wall[1] = sf::Vertex(sf::Vector2f(), sf::Color::Green);
     scene.addPlayer();
     scene.addPlayer();
-    scene.players[1].setController(new AIController(scene.players[0], scene.graph));
+    scene.players[1].movement_speed = 0.9;
+    scene.players[1].setController(new AIController(scene.players[0], scene.graph, scene.walls));
     sf::View view;
     view.setSize(sf::Vector2f(28.8 * width/height, 28.8));
     view.setCenter(sf::Vector2f(0, 0));

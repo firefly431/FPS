@@ -11,7 +11,11 @@ in VertexData {
 out vec4 color_out;
 
 void main() {
-    vec4 diffuse = texture(tex, vertex_out.texcoord);
+    vec2 uv = vertex_out.texcoord;
+    // for some reason Blender flips UVs
+    uv.y = 1.0 - uv.y;
+    vec4 diffuse = texture(tex, uv);
+    /*
     vec4 specular = vec4(1.0);
     float shininess = 128.0;
     vec3 light_dir = normalize(vec3(1.0, 1.0, 1.0));
@@ -26,4 +30,6 @@ void main() {
         spec = specular * pow(i, shininess);
     }
     color_out = vec4(diffuse * intensity + spec);
+    */
+    color_out = diffuse;
 }

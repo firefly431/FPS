@@ -7,7 +7,8 @@ bool Line::intersects(const Line &other, vector *intpt) const {
 	double s = (-s1.y * (p1.x - other.p1.x) + s1.x * (p1.y - other.p1.y)) / det,
 	       t = ( s2.x * (p1.y - other.p1.y) - s2.y * (p1.x - other.p1.x)) / det;
 	if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
-		*intpt = p1 + s1 * t;
+        if (intpt)
+            *intpt = p1 + s1 * t;
 		return true;
 	}
 	return false;

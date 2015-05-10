@@ -48,6 +48,7 @@ TopDownRenderer::TopDownRenderer(int width, int height)
     shapes.point.setOrigin(0.1, 0.1);
 	shapes.wall[0] = sf::Vertex(sf::Vector2f(), sf::Color::Green);
 	shapes.wall[1] = sf::Vertex(sf::Vector2f(), sf::Color::Green);
+    scene.loadGraph("faces.obj");
     scene.addPlayer();
     scene.addPlayer();
     scene.players[1].movement_speed = 0.9;
@@ -56,8 +57,6 @@ TopDownRenderer::TopDownRenderer(int width, int height)
     view.setSize(sf::Vector2f(28.8 * width/height, 28.8));
     view.setCenter(sf::Vector2f(0, 0));
     window.setView(view);
-    scene.loadWalls("walls.obj");
-    scene.loadGraph("faces.obj");
 }
 
 void TopDownRenderer::mainloop() {
@@ -94,6 +93,7 @@ void TopDownRenderer::mainloop() {
         for (const auto &nn : scene.graph.nodes) {
 #endif
             //drawPoint(nn.position);
+            /*
             Triangle *tri = dynamic_cast<Triangle *>(nn.shape.get());
             if (tri == nullptr) {
                 Quad *quad = (Quad *)nn.shape.get();
@@ -102,6 +102,7 @@ void TopDownRenderer::mainloop() {
             } else {
                 drawTri(*tri, sf::Color::Blue);
             }
+            */
             for (const auto &ne : nn.edges) {
                 drawLine(Line(nn.position,
                               ne.to->position), sf::Color::White);

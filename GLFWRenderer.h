@@ -15,6 +15,10 @@ class GLFWRenderer {
     friend void cursor_callback(GLFWwindow *, double, double);
     friend void mouse_callback(GLFWwindow *, int, int, int);
 public:
+    static const double WALL_HEIGHT;
+    static const double UV_HEIGHT;
+    static const double FLOOR_SCALE;
+
     GLFWRenderer(unsigned int width, unsigned int height);
     ~GLFWRenderer();
 
@@ -31,4 +35,7 @@ protected:
     std::unique_ptr<Mesh> f_mesh;
     Scene scene;
     Player *player;
+
+    // generate scene and floor meshes
+    void generateSceneMesh();
 };

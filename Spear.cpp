@@ -14,11 +14,11 @@ bool Spear::move(std::vector<Player> &players, const std::vector<Line> &walls) {
     // first collide with walls
     vector colpt;
 #if defined(_MSC_VER) && _MSC_VER < 1800
-    auto w_it = walls.end();
-    for (auto it = walls.begin(); it != w_it; it++) {
-        auto &w = *it;
+    auto w_it = walls.cend();
+    for (auto it = walls.cbegin(); it != w_it; it++) {
+        const auto &w = *it;
 #else
-    for (Line &w : walls) {
+    for (const Line &w : walls) {
 #endif
         // process w
         if (w.intersects(cb, &colpt)) {

@@ -4,6 +4,7 @@
 
 class Triangle : public Shape {
     friend class Scene;
+    friend class TopDownRenderer;
     friend class Quad;
 public:
     Triangle(const vector &, const vector &, const vector &);

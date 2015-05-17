@@ -19,6 +19,7 @@ class Spear;
 class Player {
     friend class PlayerMesh;
     friend class Camera;
+    friend class TopDownRenderer;
 public:
     Player();
     Player(const vector pos, const double h);

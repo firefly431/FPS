@@ -43,6 +43,12 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     case GLFW_KEY_D:
         renderer->player->input.right = action != GLFW_RELEASE;
         break;
+    case GLFW_KEY_R:
+        if (!renderer->scene.players[1].controller)
+            renderer->scene.players[1].setController(
+                new AIController(*renderer->player,
+                                 renderer->scene.graph, renderer->scene.walls));
+        break;
     }
 }
 
@@ -119,8 +125,6 @@ GLFWRenderer::GLFWRenderer(unsigned int width, unsigned int height) {
     scene.addPlayer();
     scene.addPlayer();
     player = &scene.players[0];
-    scene.players[1].setController(
-        new AIController(*player, scene.graph, scene.walls));
 }
 
 void GLFWRenderer::mainloop() {

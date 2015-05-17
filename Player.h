@@ -45,8 +45,8 @@ public:
     void rotate(double amount);
     void hit(const Spear &spear);
     void setController(PlayerController *);
-protected:
     std::unique_ptr<PlayerController> controller;
+protected:
     void moveForward();
     void moveLeft();
     void moveRight();

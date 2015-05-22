@@ -5,10 +5,12 @@
 
 #include <list>
 
+// graph of map nodes (for pathfinding)
 class MapGraph {
 public:
     MapGraph();
 
+    // forward declaration
     struct Node;
 
     struct Edge {
@@ -18,7 +20,7 @@ public:
 
     struct Node {
         Node(vector position, Shape *shape);
-        Node(Node &&move);
+        Node(Node &&move); // move ctor
         vector position;
         std::unique_ptr<Shape> shape;
         std::list<Edge> edges;

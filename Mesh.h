@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Texture.h"
 
+// mesh, contains all info necessary to draw
 class Mesh {
 public:
     Mesh(ShaderProgram &&prog, VertexArray &&vao, Texture &&tex);
@@ -12,7 +13,7 @@ public:
     void activate();
     static void deactivate();
     void updateVP(const Camera &camera); // must be active
-    void draw();
+    void draw(); // must be active
 protected:
     ShaderProgram prog;
     VertexArray vao;

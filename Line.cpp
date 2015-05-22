@@ -1,6 +1,8 @@
 #include "Line.h"
 
 bool Line::intersects(const Line &other, vector *intpt) const {
+    // this is an optimized system of equations simplifier
+    // it's pretty complicated
     vector s1(vec()), s2(other.vec());
     double det = -s2.x * s1.y + s1.x * s2.y;
     if (det == 0) return false; // parallel; asssume false

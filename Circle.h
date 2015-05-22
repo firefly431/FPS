@@ -3,6 +3,7 @@
 #include "vector.h"
 #include "Line.h"
 
+// circle for collision
 class Circle {
 public:
     vector position;

@@ -6,6 +6,9 @@
 #include <cstdlib>
 #include <cstring>
 
+// use a templace
+// there are vertex buffers, index buffers, all sorts
+// they should be different types
 template<GLenum BType>
 class Buffer {
     friend class VertexArray;
@@ -13,7 +16,9 @@ protected:
     GLsizeiptr size;
     GLuint id;
 public:
+    // typedef ourselves
     typedef Buffer<BType> TBuffer;
+    // data buffer
     void *data;
     Buffer(GLsizeiptr size, GLenum usage, void *copy=NULL) : size(size), id(0), data(std::malloc(size)) {
         glGenBuffers(1, &id);
@@ -23,6 +28,7 @@ public:
         glBufferData(BType, size, data, usage);
     }
     Buffer(TBuffer &&move) {
+        // set things to zero so we don't destroy the real thing
         id = move.id;
         move.id = 0;
         data = move.data;
@@ -52,19 +58,21 @@ public:
     static void deactivate() {
         glBindBuffer(BType, 0);
     }
+    // update the data
     void update(GLintptr offset, GLsizeiptr size) {
         glBufferSubData(BType, offset, size, (char *)data + offset);
     }
+    // update the whole thing
     void update() {
         glBufferSubData(BType, 0, size, data);
     }
 };
 
-#ifndef _MSC_VER
+// don't initialize the template in each file (wasteful)
 extern template class Buffer<GL_ARRAY_BUFFER>;
 extern template class Buffer<GL_ELEMENT_ARRAY_BUFFER>;
-#endif
 
+// useful typedefs
 typedef Buffer<GL_ARRAY_BUFFER> ArrayBuffer;
 typedef ArrayBuffer VertexBuffer;
 typedef Buffer<GL_ELEMENT_ARRAY_BUFFER> ElementArrayBuffer;

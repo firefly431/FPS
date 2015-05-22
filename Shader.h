@@ -63,10 +63,12 @@ public:
         stream.read(&text[0], text.size());
         load(text.c_str());
     }
-    Shader(const char *fname, int) { // what can you do
+    // to distinguish from text
+    Shader(const char *fname, int) {
         std::ifstream stream(fname);
         std::string text;
         stream.seekg(0, std::ios::end);
+        // allocate space for the whole file
         text.resize(stream.tellg());
         stream.seekg(0, std::ios::beg);
         stream.read(&text[0], text.size());
@@ -90,10 +92,8 @@ public:
     }
 };
 
-#ifndef _MSC_VER
 extern template class Shader<GL_VERTEX_SHADER>;
 extern template class Shader<GL_FRAGMENT_SHADER>;
-#endif
 
 typedef Shader<GL_VERTEX_SHADER> VertexShader;
 typedef Shader<GL_FRAGMENT_SHADER> FragmentShader;

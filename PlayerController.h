@@ -2,6 +2,7 @@
 
 class Player;
 
+// abstract class for player controller (AI)
 class PlayerController {
 protected:
     friend class Player;

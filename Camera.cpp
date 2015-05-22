@@ -20,19 +20,26 @@ Camera::Camera(Camera &&move) {
 void Camera::updateView(float eyeX, float eyeY, float eyeZ,
                         float dirX, float dirY, float dirZ,
                         float up_X, float up_Y, float up_Z) {
+    // calculate a view matrix from some vectors
+    // z axis
     float zx = -dirX;
     float zy = -dirY;
     float zz = -dirZ;
+    // x axis (cross product of up and z)
     float xx = up_Y*zz - up_Z*zy;
     float xy = up_Z*zx - up_X*zz;
     float xz = up_X*zy - up_Y*zx;
+    // normalize the x axis
+    // this stands for x inverse magnitude
     float ximag = 1.0 / std::sqrt(xx * xx + xy * xy + xz * xz);
     xx *= ximag;
     xy *= ximag;
     xz *= ximag;
+    // y axis (cross product of z and x)
     float yx = zy*xz - zz*xy;
     float yy = zz*xx - zx*xz;
     float yz = zx*xy - zy*xx;
+    // set matrix according to OpenGL standard
     view[0] = xx; view[1] = yx; view[2] = zx; view[3] = 0;
     view[4] = xy; view[5] = yy; view[6] = zy; view[7] = 0;
     view[8] = xz; view[9] = yz; view[10] = zz; view[11] = 0;
@@ -49,6 +56,7 @@ void Camera::updateView(const Player &player, float eyeZ) {
 }
 
 void Camera::updateProj(float fov, float aspect, float znear, float zfar) {
+    // standard perspective calculation
     static const double PI_OVER_360 = M_PI / 360.;
     float xymax = znear * std::tan(fov * PI_OVER_360);
     float ymin = -xymax;

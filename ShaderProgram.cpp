@@ -35,7 +35,7 @@ ShaderProgram::ShaderProgram(VertexShader &&v, FragmentShader &&f) {
 
 ShaderProgram::ShaderProgram(ShaderProgram &&move) {
     id = move.id;
-    move.id = 0;
+    move.id = 0; // don't delete when deleting moved from
 }
 
 ShaderProgram::~ShaderProgram() {

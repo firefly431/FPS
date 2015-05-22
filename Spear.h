@@ -7,13 +7,17 @@
 class Player;
 class Line;
 
+// spear class
 class Spear {
 public:
+    // head position
     vector head;
+    // velocity vector
     vector velocity;
+    // who owns it
     Player *owner;
 
-    const static double SPEAR_SPEED; // = 10
+    const static double SPEAR_SPEED;
 
     Spear(vector head, double direction, Player *owner);
 

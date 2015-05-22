@@ -49,6 +49,7 @@ double Player::getRotation() const {
 }
 
 void Player::move(const std::vector<Line> &walls, std::list<Spear> &spears) {
+    // if we have a controller let it update our controls
     if (controller)
         controller->update(*this);
     if (input.up) moveForward();
@@ -59,19 +60,15 @@ void Player::move(const std::vector<Line> &walls, std::list<Spear> &spears) {
     if (input.fire) {
         if (fire_rate <= 0) {
             fire_rate = FIRE_RATE;
-#if defined(_MSC_VER) && _MSC_VER < 1800
-            spears.push_back(Spear(position, heading, this));
-#else
             spears.emplace_back(position, heading, this);
-#endif
         } else {
             fire_rate--;
         }
     }
-    else
+    else // clamp fire_rate at -1
         if (--fire_rate < 0) fire_rate = -1;
-    int colcount = 0;
-    if (false) {
+    int colcount = 0; // collision count
+    if (false) { // only update count when redoing
 redo_collision:
         if (++colcount > 20) {
             std::cerr << "Over 20 collisions; aborting" << std::endl;
@@ -79,11 +76,8 @@ redo_collision:
         }
         circ = getCollisionBounds();
     }
-#if defined(_MSC_VER) && _MSC_VER < 1800
-    for each (const auto &wall in walls) {
-#else
+    // intersect all the walls
     for (const auto &wall : walls) {
-#endif
         vector off;
         if (circ.intersects(wall, &off)) {
             position += off;
@@ -97,7 +91,9 @@ Circle Player::getCollisionBounds() const {
 }
 
 void Player::hit(const Spear &spear) {
-    // do nothing for now
+    // do nothing
+    // was planning on doing something
+    // but alas, was never implemented
 }
 
 void Player::setController(PlayerController *ct) {

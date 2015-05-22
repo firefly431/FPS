@@ -12,11 +12,11 @@
  */
 class VertexArray {
 protected:
-    GLuint id;
-    std::unique_ptr<VertexBuffer> buffers[ATTRIBUTE_NUM];
-    std::unique_ptr<IndexBuffer> indices;
-    GLsizei size;
-    GLenum mode, index_type;
+    GLuint id; // OpenGL id
+    std::unique_ptr<VertexBuffer> buffers[ATTRIBUTE_NUM]; // list of buffers
+    std::unique_ptr<IndexBuffer> indices; // index buffer object
+    GLsizei size; // number of vertices
+    GLenum mode, index_type; // mode is the primitive type, index_type is the type of the index (e.g. GL_FLOAT)
 public:
     VertexArray(GLsizei size, GLenum mode = GL_TRIANGLES);
     VertexArray(VertexArray &&move);

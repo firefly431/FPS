@@ -11,6 +11,7 @@ static inline double max_(double a, double b, double c) {
     return (a > b ? (a > c ? a : c) : (b > c ? b : c)) + EPSILON;
 }
 
+// distance squared point to segment
 inline double dspts(const vector &a, const vector &b, const vector &p) {
     double sql = (b - a).sqr();
     double dot = ((p - a) * (b - a)) / sql;
@@ -23,6 +24,7 @@ inline double dspts(const vector &a, const vector &b, const vector &p) {
     return (p - b).sqr();
 }
 
+// is included
 inline bool dsptsi(const vector &a, const vector &b, const vector &p) {
     return dspts(a, b, p) <= EPSQ;
 }
@@ -31,7 +33,7 @@ Triangle::Triangle(const vector &a,
                    const vector &b,
                    const vector &c)
     : a(a), b(b), c(c),
-      v0(b - a), v1(c - a),
+      v0(b - a), v1(c - a), // calculate a bunch of things
       d00(v0.sqr()), d01(v0 * v1), d11(v1.sqr()),
       denom(d00 * d11 - d01 * d01),
       minx(min_(a.x, b.x, c.x)), maxx(max_(a.x, b.x, c.x)),
@@ -39,8 +41,10 @@ Triangle::Triangle(const vector &a,
 {}
 
 bool Triangle::contains(const vector &p) const {
+    // crude AABB test
     if (p.x < minx || p.x > maxx || p.y < miny || p.y > maxy)
         return false;
+    // barycentric coordinate test
     vector v2 = p - a;
     const double d20 = v2 * v0;
     const double d21 = v2 * v1;
@@ -49,6 +53,7 @@ bool Triangle::contains(const vector &p) const {
                  u = 1 - v - w;
     if (v >= 0 && v <= 1 && w >= 0 && w <= 1 && u >= 0 && u <= 1)
         return true;
+    // check outlines
     return dsptsi(a, b, p) || dsptsi(b, c, p) || dsptsi(c, a, p);
 }
 

@@ -13,26 +13,14 @@ bool Spear::move(std::vector<Player> &players, const std::vector<Line> &walls) {
     auto cb = getCollisionBounds();
     // first collide with walls
     vector colpt;
-#if defined(_MSC_VER) && _MSC_VER < 1800
-    auto w_it = walls.cend();
-    for (auto it = walls.cbegin(); it != w_it; it++) {
-        const auto &w = *it;
-#else
     for (const Line &w : walls) {
-#endif
         // process w
         if (w.intersects(cb, &colpt)) {
             return false; // destroy
         }
     }
-#if defined(_MSC_VER) && _MSC_VER < 1800
-    auto e_it = players.end();
-    for (auto it = players.begin(); it != e_it; it++) {
-        auto &p = *it;
-#else
     for (Player &p : players) {
-#endif
-        if (&p == owner) continue;
+        if (&p == owner) continue; // don't process owner
         // process p
         if (p.getCollisionBounds().intersects(cb, &colpt)) {
             p.hit(*this);
